@@ -22,10 +22,16 @@ The dataset consists of normalized numerical values across a range of features, 
 
 Use **cluster** methods (Kmeans, DBSCAN...) to form groups of people. For each group, build their own **Random Forest**.
 
+![graphics-CluRF](./images/graphics-CluRF.png)
+
 ## 2. Cluster + (Feature Selection) + SVMs
 
 Apply **cluster** methods. For each cluster, apply **feature selection** methods (e.g. Mutual Information, RFE). Train **SVM classifiers** for each cluster
 
+![graphics-CluSVM](./images/graphics-CluSVM.png)
+
 ## 3. Neural Network
 
 Train a **Multilayer Perceptron (MLP)** with optimal layers and nodes. Predict risk probability directly with NN.
+
+![graphics-NN](./images/graphics-NN.png)
