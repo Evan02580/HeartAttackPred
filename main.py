@@ -1,4 +1,3 @@
-# cluster_main.py
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.cluster import KMeans
@@ -44,7 +43,7 @@ def apply_clustering(data, n_clusters):
 
 # 3. 主流程
 if __name__ == "__main__":
-    file_path = 'heart.csv'
+    file_path = "./datasets/heart-attack-risk-prediction-dataset.csv"
     data, labels = read_data(file_path)
 
     find_optimal_k(data, max_k=10)

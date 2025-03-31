@@ -3,6 +3,11 @@ from sklearn.preprocessing import StandardScaler
 
 def read_data(filepath, label_col='Heart Attack Risk (Binary)'):
     df = pd.read_csv(filepath)
+    df = df.dropna()
+    if 'Gender' in df.columns:
+        df['Gender'] = df['Gender'].map({'Female': 0, 'Male': 1})
+
+
     features = df.drop(columns=[label_col, "Heart Attack Risk (Text)"])
     labels = df[label_col]
 
