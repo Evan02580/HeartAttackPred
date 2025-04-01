@@ -1,57 +1,41 @@
-import matplotlib.pyplot as plt
-import seaborn as sns
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
-from sklearn.decomposition import PCA
-
 from loadData import read_data
+from cluster import find_optimal_k, apply_clustering
+from randomForest import train_rf_by_cluster, evaluate_rf_by_cluster
+import matplotlib.pyplot as plt
 
-# 1. 选择最优K
-def find_optimal_k(data, max_k=10):
-    inertia = []
-    silhouette_scores = []
+# 1. Loading Data
+file_path = "./datasets/heart-attack-risk-prediction-dataset.csv"
+X_train, y_train, X_val, y_val, X_test, y_test = read_data(file_path)
 
-    for k in range(2, max_k + 1):
-        model = KMeans(n_clusters=k, random_state=42)
-        model.fit(data)
-        inertia.append(model.inertia_)
-        score = silhouette_score(data, model.labels_)
-        silhouette_scores.append(score)
+# 2. Optimal K
+scores = find_optimal_k(X_train, max_k=8)
+k_values, silhouette_scores = zip(*scores)
+plt.plot(k_values, silhouette_scores, marker='o')
+plt.title("Silhouette Score vs K")
+plt.xlabel("K")
+plt.ylabel("Silhouette Score")
+plt.show()
 
-    plt.figure(figsize=(12, 5))
+# 3. Clustering
+best_k = 4
+cluster_model = KMeans(n_clusters=best_k, random_state=42)
+train_clusters = cluster_model.fit_predict(X_train)
 
-    plt.subplot(1, 2, 1)
-    plt.plot(range(2, max_k + 1), inertia, marker='o')
-    plt.title('Elbow Method')
-    plt.xlabel('Number of Clusters')
-    plt.ylabel('Inertia')
+# 4. Training Random Forest by Cluster
+models, train_scores = train_rf_by_cluster(X_train, y_train, train_clusters)
+print("\nTraining Results by Cluster:")
+for c, metrics in train_scores.items():
+    print(f"Cluster {c} - F1: {metrics['F1']:.4f}, Acc: {metrics['Accuracy']:.4f}, AUC: {metrics['AUC']:.4f}")
 
-    plt.subplot(1, 2, 2)
-    plt.plot(range(2, max_k + 1), silhouette_scores, marker='o')
-    plt.title('Silhouette Score')
-    plt.xlabel('Number of Clusters')
-    plt.ylabel('Score')
+# 5. Predicting Clusters
+val_clusters = cluster_model.predict(X_val)
+test_clusters = cluster_model.predict(X_test)
 
-    plt.tight_layout()
-    plt.show()
 
-# 2. 聚类
-def apply_clustering(data, n_clusters):
-    kmeans = KMeans(n_clusters=n_clusters, random_state=42)
-    cluster_labels = kmeans.fit_predict(data)
-    return cluster_labels
+val_metrics = evaluate_rf_by_cluster(models, X_val, y_val, val_clusters)
+print("\nValidation Set Metrics (avg):", val_metrics)
 
-# 3. 主流程
-if __name__ == "__main__":
-    file_path = "./datasets/heart-attack-risk-prediction-dataset.csv"
-    data, labels = read_data(file_path)
-
-    find_optimal_k(data, max_k=10)
-
-    cluster_labels = apply_clustering(data, n_clusters=4)
-
-    # 可视化
-    reduced_data = PCA(n_components=2).fit_transform(data)
-    sns.scatterplot(x=reduced_data[:, 0], y=reduced_data[:, 1], hue=cluster_labels, palette="Set2")
-    plt.title('Cluster Visualization with PCA')
-    plt.show()
+test_metrics = evaluate_rf_by_cluster(models, X_test, y_test, test_clusters)
+print("\nTest Set Metrics (avg):", test_metrics)
