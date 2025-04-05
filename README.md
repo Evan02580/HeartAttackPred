@@ -30,7 +30,7 @@ Apply **cluster** methods. For each cluster, apply **feature selection** methods
 
 ![graphics-CluSVM](./images/graphics-CluSVM.png)
 
-### 3. Neural Network
+### 3. Neural Network  
 
 Train a **Multilayer Perceptron (MLP)** with optimal layers and nodes. Predict risk probability directly with NN.
 
