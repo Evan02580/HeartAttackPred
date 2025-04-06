@@ -4,6 +4,7 @@ from loadData import read_data
 from cluster import find_optimal_k, apply_clustering
 from randomForest import train_rf_by_cluster, evaluate_rf_by_cluster
 import matplotlib.pyplot as plt
+from tqdm import tqdm
 
 # 1. Loading Data
 file_path = "./datasets/heart-attack-risk-prediction-dataset.csv"
@@ -16,17 +17,19 @@ plt.plot(k_values, silhouette_scores, marker='o')
 plt.title("Silhouette Score vs K")
 plt.xlabel("K")
 plt.ylabel("Silhouette Score")
-plt.show()
+plt.show(block=False)
+plt.pause(2)
+
 
 # 3. Clustering
-best_k = 4
+best_k = 3
 cluster_model = KMeans(n_clusters=best_k, random_state=42)
 train_clusters = cluster_model.fit_predict(X_train)
 
 # 4. Training Random Forest by Cluster
 models, train_scores = train_rf_by_cluster(X_train, y_train, train_clusters)
 print("\nTraining Results by Cluster:")
-for c, metrics in train_scores.items():
+for c, metrics in tqdm(train_scores.items()):
     print(f"Cluster {c} - F1: {metrics['F1']:.4f}, Acc: {metrics['Accuracy']:.4f}, AUC: {metrics['AUC']:.4f}")
 
 # 5. Predicting Clusters
