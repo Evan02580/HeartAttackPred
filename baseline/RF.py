@@ -10,16 +10,16 @@ X_train, y_train, X_val, y_val, X_test, y_test = read_data(file_path)
 n_estimators_list = [50, 100, 150, 200]
 
 for n_estimators in n_estimators_list:
-    # 构建随机森林模型
+    # Construct RF
     rf_model = RandomForestClassifier(n_estimators=n_estimators, random_state=760)
     rf_model.fit(X_train, y_train)
 
-    # 对各数据集进行预测
+    # Predict Data
     y_train_pred = rf_model.predict(X_train)
     y_val_pred = rf_model.predict(X_val)
     y_test_pred = rf_model.predict(X_test)
 
-    # 计算各指标：F1分数、准确率和 AUC
+    # Calculate metric
     train_f1 = f1_score(y_train, y_train_pred)
     train_accuracy = accuracy_score(y_train, y_train_pred)
     train_auc = roc_auc_score(y_train, rf_model.predict_proba(X_train)[:, 1])
@@ -32,7 +32,7 @@ for n_estimators in n_estimators_list:
     test_accuracy = accuracy_score(y_test, y_test_pred)
     test_auc = roc_auc_score(y_test, rf_model.predict_proba(X_test)[:, 1])
 
-    # 输出结果，每个指标合并为一行
+    # result
     print(f"Result with n_estimators = {n_estimators}:")
     print(f"Train Set Metrics: F1 Score: {train_f1:.4f}, Accuracy: {train_accuracy:.4f}, AUC: {train_auc:.4f}")
     print(f"Valid Set Metrics: F1 Score: {val_f1:.4f}, Accuracy: {val_accuracy:.4f}, AUC: {val_auc:.4f}")
