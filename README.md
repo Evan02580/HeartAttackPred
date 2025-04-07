@@ -2,7 +2,7 @@
 
 The project was developed for the COMPSCI 760 course
 
-## Authors
+## Group Members
 
 Bofan Wang, Yihong Pan, Yifan Zhou, Huazhe Cheng, Zhipeng Lin
 
