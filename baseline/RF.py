@@ -7,7 +7,7 @@ from sklearn.ensemble import RandomForestClassifier
 file_path = "../datasets/heart-attack-risk-prediction-dataset.csv"
 X_train, y_train, X_val, y_val, X_test, y_test = read_data(file_path)
 
-n_estimators_list = [50, 100, 150, 200]
+n_estimators_list = [5,10, 20, 30]
 
 for n_estimators in n_estimators_list:
     # Construct RF
