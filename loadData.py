@@ -36,7 +36,6 @@ def read_data(filepath, label_col='Heart Attack Risk (Binary)',FS_method='RFECV'
     if 'Gender' in df.columns:
         df['Gender'] = df['Gender'].map({'Female': 0, 'Male': 1})
 
-
     features = df.drop(columns=[label_col, "Heart Attack Risk (Text)"])
     labels = df[label_col]
 

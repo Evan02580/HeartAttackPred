@@ -23,7 +23,7 @@ plt.pause(2)
 
 # 3. Clustering
 best_k = 3
-cluster_model = KMeans(n_clusters=best_k, random_state=42)
+cluster_model = KMeans(n_clusters=best_k, random_state=760)
 train_clusters = cluster_model.fit_predict(X_train)
 
 #add hyperparameter list for test
