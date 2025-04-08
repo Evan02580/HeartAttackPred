@@ -8,6 +8,8 @@ Bofan Wang, Yihong Pan, Yifan Zhou, Huazhe Cheng, Zhipeng Lin
 
 ## Dataset Overview
 
+The open source dataset can be available on kaggle: [Heart Attack Risk Prediction](https://www.kaggle.com/datasets/alikalwar/heart-attack-risk-prediction-cleaned-dataset)
+
 The dataset consists of normalized numerical values across a range of features, including:
 
 - **People**: Age, Gender, Income...
