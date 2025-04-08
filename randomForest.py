@@ -1,13 +1,13 @@
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import f1_score, accuracy_score, roc_auc_score, balanced_accuracy_score
 
-def train_rf_by_cluster(X_train, y_train, cluster_labels):
+def train_rf_by_cluster(X_train, y_train, cluster_labels,n_estimators):
     cluster_models = {}
     cluster_scores = {}
 
     for cluster in set(cluster_labels):
         idx = (cluster_labels == cluster)
-        clf = RandomForestClassifier(random_state=42)
+        clf = RandomForestClassifier(n_estimators=n_estimators,random_state=760)
         clf.fit(X_train[idx], y_train[idx])
 
         y_pred = clf.predict(X_train[idx])
