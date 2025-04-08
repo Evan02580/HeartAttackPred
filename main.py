@@ -1,3 +1,4 @@
+import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 from loadData import read_data
@@ -27,6 +28,7 @@ if find:
 best_k = 5
 cluster_model = KMeans(n_clusters=best_k, random_state=760)
 train_clusters = cluster_model.fit_predict(X_train)
+
 
 #add hyperparameter list for test
 n_estimators_list=[10]

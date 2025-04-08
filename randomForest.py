@@ -8,7 +8,7 @@ def train_rf_by_cluster(X_train, y_train, cluster_labels, n_estimators):
 
     for cluster in set(cluster_labels):
         idx = (cluster_labels == cluster)
-        clf = RandomForestClassifier(n_estimators=n_estimators, max_depth=5, random_state=760)
+        clf = RandomForestClassifier(n_estimators=n_estimators, max_depth=20, random_state=760)
         clf.fit(X_train[idx], y_train[idx])
 
         y_pred = clf.predict(X_train[idx])

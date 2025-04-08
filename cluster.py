@@ -13,4 +13,4 @@ def find_optimal_k(data, max_k=10):
 def apply_clustering(data, n_clusters):
     model = KMeans(n_clusters=n_clusters, random_state=760)
     labels = model.fit_predict(data)
-    return labels
+    return model, labels
