@@ -4,7 +4,7 @@ The project was developed for the COMPSCI 760 course
 
 ## Group Members
 
-Bofan Wang, Yihong Pan, Yifan Zhou, Zhipeng Lin, Huazhe Cheng
+Bofan Wang, Yihong Pan, Yifan Zhou, Huazhe Cheng, Zhipeng Lin
 
 ## Dataset Overview
 
