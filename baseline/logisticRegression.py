@@ -25,6 +25,7 @@ for thr in thresholds:
 
 print("Best threshold on validation set:", best_threshold)
 
+
 # Define an evaluation function that outputs metrics in the desired dictionary format
 def evaluate_model(model, X_data, y_data, threshold):
     # Predict probabilities and apply the tuned threshold

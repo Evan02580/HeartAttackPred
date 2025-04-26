@@ -1,13 +1,14 @@
+import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import f1_score, accuracy_score, roc_auc_score, balanced_accuracy_score
 
-def train_rf_by_cluster(X_train, y_train, cluster_labels):
+def train_rf_by_cluster(X_train, y_train, cluster_labels, n_estimators):
     cluster_models = {}
     cluster_scores = {}
 
     for cluster in set(cluster_labels):
         idx = (cluster_labels == cluster)
-        clf = RandomForestClassifier(random_state=42)
+        clf = RandomForestClassifier(n_estimators=n_estimators, max_depth=20, random_state=760)
         clf.fit(X_train[idx], y_train[idx])
 
         y_pred = clf.predict(X_train[idx])
@@ -24,6 +25,7 @@ def train_rf_by_cluster(X_train, y_train, cluster_labels):
 
 def evaluate_rf_by_cluster(models, X_data, y_data, cluster_labels):
     metrics = {'F1': [], 'Accuracy': [], 'AUC': [], 'Balanced Accuracy': []}
+    weights = []
     for cluster in set(cluster_labels):
         idx = (cluster_labels == cluster)
         model = models[cluster]
@@ -37,4 +39,13 @@ def evaluate_rf_by_cluster(models, X_data, y_data, cluster_labels):
         metrics['AUC'].append(roc_auc_score(y_true, y_prob))
         metrics['Balanced Accuracy'].append(balanced_accuracy_score(y_true, y_pred))
 
-    return {m: sum(scores)/len(scores) for m, scores in metrics.items()}
+        weights.append(len(y_true))
+
+    # Normalize the metrics by the number of samples in each cluster
+    weights = np.array(weights)
+    weights = weights / np.sum(weights)
+
+    for m in metrics:
+        metrics[m] = np.average(metrics[m], weights=weights)
+
+    return metrics

@@ -5,9 +5,9 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import f1_score, accuracy_score, roc_auc_score
 
 
-# ===================== 🚨 没有早停的过拟合版本，它会在训练集上表现优异，但是在测试集和验证集上非常糟糕 =====================
+# ===================== No early stop, perform good in train while bad in valid/test =====================
 #
-# # 1. 读取并检查数据
+# # 1. Load data
 # file_path = "../datasets/heart-attack-risk-prediction-dataset.csv"
 # X_train, y_train, X_val, y_val, X_test, y_test = read_data(file_path)
 #
@@ -17,14 +17,14 @@ from sklearn.metrics import f1_score, accuracy_score, roc_auc_score
 # print("Test:  Positive samples =", np.sum(y_test), " Negative =", len(y_test) - np.sum(y_test))
 # print("")
 #
-# # 2. 对特征进行标准化（Standardization）
+# # 2. Standardize features
 # scaler = StandardScaler()
 # scaler.fit(X_train)  # 只在训练集上fit
 # X_train_scaled = scaler.transform(X_train)
 # X_val_scaled = scaler.transform(X_val)
 # X_test_scaled = scaler.transform(X_test)
 #
-# # 3. 设置不同的隐藏层结构供测试
+# # 3. Set hidden layer structures
 # hidden_layers_list = [
 #     (32, 16),
 #     (64, 32),
@@ -46,18 +46,17 @@ from sklearn.metrics import f1_score, accuracy_score, roc_auc_score
 #         verbose=True               # 打印损失和迭代信息，便于观察收敛
 #     )
 #
-#     # 5. 训练
+#     # 5. Train the model
 #     mlp_model.fit(X_train_scaled, y_train)
 #
-#     # 打印本次迭代了多少轮
 #     print(f"\n[Debug] Hidden Layers: {hidden_layers}, n_iter_ = {mlp_model.n_iter_}")
 #
-#     # 6. 在三套数据集上预测
+#     # 6. Evaluate the model
 #     y_train_pred = mlp_model.predict(X_train_scaled)
 #     y_val_pred = mlp_model.predict(X_val_scaled)
 #     y_test_pred = mlp_model.predict(X_test_scaled)
 #
-#     # 7. 计算并打印指标
+#     # 7. Print metrics
 #     train_f1  = f1_score(y_train, y_train_pred)
 #     val_f1    = f1_score(y_val,   y_val_pred)
 #     test_f1   = f1_score(y_test,  y_test_pred)
@@ -82,27 +81,27 @@ from sklearn.metrics import f1_score, accuracy_score, roc_auc_score
 
 
 
-# ===================== 🚨 早停的版本 =====================
+# ===================== Early Stop Version =====================
 
-# 1. 加载数据
+# 1. Load data
 file_path = "../datasets/heart-attack-risk-prediction-dataset.csv"
 X_train, y_train, X_val, y_val, X_test, y_test = read_data(file_path)
 
-# 输出标签分布
+# Display label distribution
 print("===> Checking label distribution <===")
 print("Train: Positive =", int(np.sum(y_train)), " Negative =", len(y_train) - int(np.sum(y_train)))
 print("Valid: Positive =", int(np.sum(y_val)),   " Negative =", len(y_val) - int(np.sum(y_val)))
 print("Test:  Positive =", int(np.sum(y_test)),  " Negative =", len(y_test) - int(np.sum(y_test)))
 print("")
 
-# 2. 标准化特征
+# 2. Standardize features
 scaler = StandardScaler()
 scaler.fit(X_train)
 X_train_scaled = scaler.transform(X_train)
 X_val_scaled = scaler.transform(X_val)
 X_test_scaled = scaler.transform(X_test)
 
-# 3. 定义隐藏层结构
+# 3. Set hidden layer structures
 hidden_layers_list = [
     (16,),
     (32, 16),
@@ -150,14 +149,14 @@ for hidden_layers in hidden_layers_list:
 
     results_storage.append(result)
 
-    # 单个模型结果
+    # Print metrics
     print(f"n_iter = {result['n_iter']}")
     print(f"Train: F1={result['train_f1']:.4f}, Acc={result['train_acc']:.4f}, AUC={result['train_auc']:.4f}")
     print(f"Valid: F1={result['val_f1']:.4f}, Acc={result['val_acc']:.4f}, AUC={result['val_auc']:.4f}")
     print(f"Test:  F1={result['test_f1']:.4f}, Acc={result['test_acc']:.4f}, AUC={result['test_auc']:.4f}")
     print("")
 
-# 4. 汇总所有模型结果
+# 4. Summary of all configurations
 print("============ All MLP Configurations Summary ============")
 for res in results_storage:
     hl = res['hidden_layers']
