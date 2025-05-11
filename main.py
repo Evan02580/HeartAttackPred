@@ -6,6 +6,7 @@ from cluster import find_optimal_k, apply_clustering
 from randomForest import train_rf_by_cluster, evaluate_rf_by_cluster
 import matplotlib.pyplot as plt
 from tqdm import tqdm
+from cluster import split_by_cluster
 
 # 1. Loading Data
 file_path = "./datasets/heart-attack-risk-prediction-dataset.csv"
@@ -25,7 +26,7 @@ if find:
 
 
 # 3. Clustering
-best_k = 5
+best_k = 4 # 4?5
 cluster_model = KMeans(n_clusters=best_k, random_state=760)
 train_clusters = cluster_model.fit_predict(X_train)
 

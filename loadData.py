@@ -52,3 +52,36 @@ def read_data(filepath, label_col='Heart Attack Risk (Binary)',FS_method='RFECV'
     # X_test = Feature_selector.transform(X_test)
 
     return X_train, y_train, X_val, y_val, X_test, y_test
+
+
+"""
+# load all data in one variable
+def read_data_all(filepath, label_col='Heart Attack Risk (Binary)'):
+
+    df = pd.read_csv(filepath).dropna()
+    if 'Gender' in df.columns:
+        df['Gender'] = df['Gender'].map({'Female': 0, 'Male': 1})
+    labels = df[label_col]
+    features = df.drop(columns=[label_col, "Heart Attack Risk (Text)"])
+    features = StandardScaler().fit_transform(features)
+    return features, labels
+"""
+
+# 读取数据并且进行特征选择 先选择特征然后再用子数据进行聚类
+def read_data_all(filepath, label_col='Heart Attack Risk (Binary)', k=10):
+    df = pd.read_csv(filepath).dropna()
+    if 'Gender' in df.columns:
+        df['Gender'] = df['Gender'].map({'Female': 0, 'Male': 1})
+
+    labels = df[label_col]
+    features = df.drop(columns=[label_col, "Heart Attack Risk (Text)"])
+
+    scaler = StandardScaler()
+    scaled = scaler.fit_transform(features)
+
+    # ✅ 添加特征选择 note：需要修改
+    from sklearn.feature_selection import SelectKBest, f_classif
+    selector = SelectKBest(score_func=f_classif, k=k) #进行特征选择
+    selected = selector.fit_transform(scaled, labels)
+
+    return selected, labels
