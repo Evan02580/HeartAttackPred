@@ -32,12 +32,12 @@ if __name__ == "__main__":
         count_0 = np.sum(y_all == 0)
         count_1 = np.sum(y_all == 1)
         ratio_1 = count_1 / (count_0 + count_1 + 1e-6)
-        print(f"📊 全数据 SMOTE后样本分布：0类={count_0}, 1类={count_1}, 1类占比={ratio_1:.2%}")
+        print(f"全数据 SMOTE后样本分布：0类={count_0}, 1类={count_1}, 1类占比={ratio_1:.2%}")
     except ValueError as e:
-        print(f"⚠️ 全数据 SMOTE失败: {e}")
+        print(f"全数据 SMOTE失败: {e}")
 
     # ✅ Step 3: 聚类处理
-    best_k = 4
+    best_k = 5
     model, cluster_labels = apply_clustering(X_all, best_k)
 
     # ✅ Step 4: 按 cluster 分别划分数据（内部不再做 SMOTE）
@@ -62,7 +62,7 @@ if __name__ == "__main__":
                   f"Test samples: {len(X_test)}")
 
             # 不再对每个 cluster 内部做 SMOTE
-            # n_estimators = [5, 20, 20, 20][c]
+            n_estimators = [15, 30, 30, 25, 30][c]
             print(f"n_estimators: {n_estimators}")
             rf = RandomForestClassifier(n_estimators=n_estimators, random_state=42)
             # xgb = XGBClassifier(n_estimators=n_estimators, use_label_encoder=False, eval_metric='logloss', random_state=42)
@@ -83,9 +83,29 @@ if __name__ == "__main__":
                     f"Acc: {metrics["Accuracy"]:.4f}, "
                     f"BalAcc: {metrics["Balanced Accuracy"]:.4f}, "
                     f"AUC: {metrics["AUC"]:.4f}")
-                if name == "Test":
+                if name == " Test":
                     total_test_metrics.append(metrics)
         # 加权平均
+        total_samples = sum(m["Samples"] for m in total_test_metrics)
+
+        # 初始化加权指标
+        weighted_avg = {
+            "F1": 0.0,
+            "Accuracy": 0.0,
+            "Balanced Accuracy": 0.0,
+            "AUC": 0.0
+        }
+
+        # 累加加权值
+        for m in total_test_metrics:
+            weight = m["Samples"] / total_samples
+            for k in weighted_avg:
+                weighted_avg[k] += m[k] * weight
+
+        # 打印加权平均结果
+        print("\n===== Weighted Average over Clusters (Test Set) =====")
+        for k, v in weighted_avg.items():
+            print(f"{k}: {v:.4f}")
 
 
 
