@@ -44,7 +44,7 @@ if __name__ == "__main__":
     split_data = split_by_cluster(X_all, y_all, cluster_labels)
 
     # Step 5: 遍历每个 cluster 并训练 Voting 模型
-    n_estimators_list = [10]
+    n_estimators_list = [30]
     for n_estimators in n_estimators_list:
         print(f"\n===== Random Forest (n_estimators={n_estimators}) =====")
         total_test_metrics = []
@@ -57,21 +57,22 @@ if __name__ == "__main__":
             y_val = data["y_val"]
             X_test = data["X_test"]
             y_test = data["y_test"]
-            print(f"Cluster {c} - "
-                  f"Train samples: {len(X_train)}, "
-                  f"Val samples: {len(X_val)}, "
+            print(f"Train samples: {len(X_train)}, "
+                  f"Valid samples: {len(X_val)}, "
                   f"Test samples: {len(X_test)}")
 
             # 不再对每个 cluster 内部做 SMOTE
-
+            # n_estimators = [5, 20, 20, 20][c]
+            print(f"n_estimators: {n_estimators}")
             rf = RandomForestClassifier(n_estimators=n_estimators, random_state=42)
-            xgb = XGBClassifier(n_estimators=n_estimators, use_label_encoder=False, eval_metric='logloss', random_state=42)
-            ensemble = VotingClassifier(estimators=[('rf', rf), ('xgb', xgb)], voting='soft')
-            ensemble.fit(X_train, y_train)
+            # xgb = XGBClassifier(n_estimators=n_estimators, use_label_encoder=False, eval_metric='logloss', random_state=42)
+            # ensemble = VotingClassifier(estimators=[('rf', rf), ('xgb', xgb)], voting='soft')
+            # ensemble.fit(X_train, y_train)
+            rf.fit(X_train, y_train)
 
-            for name, X, y in [("Train", X_train, y_train), ("Val", X_val, y_val), ("Test", X_test, y_test)]:
-                y_pred = ensemble.predict(X)
-                y_prob = ensemble.predict_proba(X)[:, 1]
+            for name, X, y in [("Train", X_train, y_train), ("Valid", X_val, y_val), (" Test", X_test, y_test)]:
+                y_pred = rf.predict(X)
+                y_prob = rf.predict_proba(X)[:, 1]
                 metrics = {"F1": f1_score(y, y_pred),
                            "Accuracy": accuracy_score(y, y_pred),
                            "Balanced Accuracy": balanced_accuracy_score(y, y_pred),
