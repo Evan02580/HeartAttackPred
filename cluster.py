@@ -19,7 +19,7 @@ def apply_clustering(data, n_clusters):
     return model, labels
 
 # 按 cluster 分别划分 train/val/test 0.7/0.1/0.2 ---- 相同的类 进行数据划分
-def split_by_cluster(X, y, cluster_labels, test_size=0.3, val_ratio=1/3):
+def split_by_cluster(X, y, cluster_labels, test_size=0.5, val_ratio=0.6):
     split_data = {}
     for c in set(cluster_labels):
         idx = (cluster_labels == c)

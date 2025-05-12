@@ -43,8 +43,8 @@ def read_data(filepath, label_col='Heart Attack Risk (Binary)',FS_method='RFECV'
     scaled_features = scaler.fit_transform(features)
 
     # 7:1:2 split
-    X_train, X_temp, y_train, y_temp = train_test_split(scaled_features, labels, test_size=0.3, random_state=42)
-    X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=2/3, random_state=42)
+    X_train, X_temp, y_train, y_temp = train_test_split(scaled_features, labels, test_size=0.5, random_state=42)
+    X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=0.6, random_state=42)
 
     # Feature_selector=General_Feature_selector(method=FS_method,n_features=n_features)
     # X_train = Feature_selector.fit_transform(X_train, y_train)
@@ -80,8 +80,8 @@ def read_data_all(filepath, label_col='Heart Attack Risk (Binary)', k=10):
     scaled = scaler.fit_transform(features)
 
     # ✅ 添加特征选择 note：需要修改
-    from sklearn.feature_selection import SelectKBest, f_classif
-    selector = SelectKBest(score_func=f_classif, k=k) #进行特征选择
-    selected = selector.fit_transform(scaled, labels)
+    # from sklearn.feature_selection import SelectKBest, f_classif
+    # selector = SelectKBest(score_func=f_classif, k=k) #进行特征选择
+    # selected = selector.fit_transform(scaled, labels)
 
-    return selected, labels
+    return scaled, labels
