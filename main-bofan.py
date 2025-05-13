@@ -54,27 +54,27 @@ if __name__ == "__main__":
 
             X_train = np.asarray(data["X_train"])
             y_train = np.asarray(data["y_train"])
-            X_val = data["X_val"]
-            y_val = data["y_val"]
+            # X_val = data["X_val"]
+            # y_val = data["y_val"]
             X_test = data["X_test"]
             y_test = data["y_test"]
             print(f"Train samples: {len(X_train)}, "
-                  f"Valid samples: {len(X_val)}, "
+                  # f"Valid samples: {len(X_val)}, "
                   f"Test samples: {len(X_test)}, ", end='')
             print(f"{sum(y_train) / len(y_train):.2f}, "
-                  f"{sum(y_val) / len(y_val):.2f}, "
+                  # f"{sum(y_val) / len(y_val):.2f}, "
                   f"{sum(y_test) / len(y_test):.2f}")
 
             # 不再对每个 cluster 内部做 SMOTE
-            depth = [10, 20, 24, 26][c]
-            n_estimators = [35, 55, 55, 45][c]
+            depth = [9, 3, 5, 7][c]
+            n_estimators = [1, 1, 4, 4][c]
             print(f"n_estimators: {n_estimators}, depth: {depth}")
             rf = RandomForestClassifier(n_estimators=n_estimators, max_depth=depth, random_state=42)
             rf.fit(X_train, y_train)
             # best_f1 = 0
             # beat_acc = 0
-            # for n in range(25, 66, 5):
-            #     for d in range(10, 46):
+            # for n in range(1, 15):
+            #     for d in range(1, 20):
             #         rf = RandomForestClassifier(n_estimators=n, max_depth=d, random_state=42)
             #         rf.fit(X_train, y_train)
             #         y_pred = rf.predict(X_test)
@@ -90,7 +90,7 @@ if __name__ == "__main__":
             #             beat_acc = accuracy_score(y, y_pred)
             # continue
 
-            for name, X, y in [("Train", X_train, y_train), ("Valid", X_val, y_val), (" Test", X_test, y_test)]:
+            for name, X, y in [("Train", X_train, y_train), (" Test", X_test, y_test)]:
                 y_pred = rf.predict(X)
                 y_prob = rf.predict_proba(X)[:, 1]
                 metrics = {"F1": f1_score(y, y_pred),

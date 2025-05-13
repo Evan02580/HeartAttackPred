@@ -19,19 +19,21 @@ def apply_clustering(data, n_clusters):
     return model, labels
 
 # 按 cluster 分别划分 train/val/test 0.7/0.1/0.2 ---- 相同的类 进行数据划分
-def split_by_cluster(X, y, cluster_labels, test_size=0.3, val_ratio=1/3):
+def split_by_cluster(X, y, cluster_labels, test_size=0.2, val_ratio=1/3):
     split_data = {}
     for c in set(cluster_labels):
         idx = (cluster_labels == c)
         X_cluster = X[idx]
         y_cluster = y[idx]
 
-        X_train, X_temp, y_train, y_temp = train_test_split(X_cluster, y_cluster, test_size=test_size, random_state=42)
-        X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=1 - val_ratio, random_state=42)
+        # X_train, X_temp, y_train, y_temp = train_test_split(X_cluster, y_cluster, test_size=test_size, random_state=42)
+        # X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=1 - val_ratio, random_state=42)
+        X_train, X_test, y_train, y_test = train_test_split(X_cluster, y_cluster, test_size=test_size, random_state=42)
+
 
         split_data[c] = {
             "X_train": X_train, "y_train": y_train,
-            "X_val": X_val, "y_val": y_val,
+            # "X_val": X_val, "y_val": y_val,
             "X_test": X_test, "y_test": y_test
         }
 
