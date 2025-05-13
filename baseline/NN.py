@@ -2,8 +2,7 @@ from loadData import read_data
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 from sklearn.neural_network import MLPClassifier
-from sklearn.metrics import f1_score, accuracy_score, roc_auc_score
-
+from sklearn.metrics import f1_score, accuracy_score, roc_auc_score, balanced_accuracy_score
 
 # ===================== No early stop, perform good in train while bad in valid/test =====================
 #
@@ -145,15 +144,17 @@ for hidden_layers in hidden_layers_list:
         'train_auc': roc_auc_score(y_train, mlp_model.predict_proba(X_train_scaled)[:, 1]),
         # 'val_auc': roc_auc_score(y_val, mlp_model.predict_proba(X_val_scaled)[:, 1]),
         'test_auc': roc_auc_score(y_test, mlp_model.predict_proba(X_test_scaled)[:, 1]),
+        'train_balanced_acc': balanced_accuracy_score(y_train, y_train_pred),
+        'test_balanced_acc': balanced_accuracy_score(y_test, y_test_pred)
     }
 
     results_storage.append(result)
 
     # Print metrics
     print(f"n_iter = {result['n_iter']}")
-    print(f"Train: F1={result['train_f1']:.4f}, Acc={result['train_acc']:.4f}, AUC={result['train_auc']:.4f}")
+    print(f"Train: F1={result['train_f1']:.4f}, Acc={result['train_acc']:.4f}, AUC={result['train_auc']:.4f}, BalAcc={result['train_balanced_acc']:.4f}")
     # print(f"Valid: F1={result['val_f1']:.4f}, Acc={result['val_acc']:.4f}, AUC={result['val_auc']:.4f}")
-    print(f"Test:  F1={result['test_f1']:.4f}, Acc={result['test_acc']:.4f}, AUC={result['test_auc']:.4f}")
+    print(f"Test:  F1={result['test_f1']:.4f}, Acc={result['test_acc']:.4f}, AUC={result['test_auc']:.4f}, BalAcc={result['test_balanced_acc']:.4f}")
     print("")
 
 # 4. Summary of all configurations
@@ -163,5 +164,9 @@ for res in results_storage:
     print(f"hidden_layers={hl}, n_iter={res['n_iter']}")
     print(f"  Train: F1={res['train_f1']:.4f}, Acc={res['train_acc']:.4f}, AUC={res['train_auc']:.4f}")
     # print(f"  Valid: F1={res['val_f1']:.4f}, Acc={res['val_acc']:.4f}, AUC={res['val_auc']:.4f}")
-    print(f"  Test:  F1={res['test_f1']:.4f}, Acc={res['test_acc']:.4f}, AUC={res['test_auc']:.4f}")
+    print(f"  Test:\n"
+          f"F1: {res['test_f1']:.4f}\n"
+          f"Accuracy: {res['test_acc']:.4f}\n"
+          f"Balanced Accuracy: {res['test_balanced_acc']:.4f}\n"
+          f"AUC: {res['test_auc']:.4f}")
     print("--------------------------------------------------------")

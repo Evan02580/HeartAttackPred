@@ -1,5 +1,5 @@
 from loadData import read_data
-from sklearn.metrics import f1_score, accuracy_score, roc_auc_score
+from sklearn.metrics import f1_score, accuracy_score, roc_auc_score, balanced_accuracy_score
 from sklearn.ensemble import RandomForestClassifier
 
 
@@ -30,10 +30,15 @@ for n_estimators in n_estimators_list:
 
     test_f1 = f1_score(y_test, y_test_pred)
     test_accuracy = accuracy_score(y_test, y_test_pred)
+    test_bal_acc = balanced_accuracy_score(y_test, y_test_pred)
     test_auc = roc_auc_score(y_test, rf_model.predict_proba(X_test)[:, 1])
 
     # result
     print(f"Result with n_estimators = {n_estimators}:")
     print(f"Train Set Metrics: F1 Score: {train_f1:.4f}, Accuracy: {train_accuracy:.4f}, AUC: {train_auc:.4f}")
     # print(f"Valid Set Metrics: F1 Score: {val_f1:.4f}, Accuracy: {val_accuracy:.4f}, AUC: {val_auc:.4f}")
-    print(f"Test Set Metrics: F1 Score: {test_f1:.4f}, Accuracy: {test_accuracy:.4f}, AUC: {test_auc:.4f}\n")
+    print(f"Test Set Metrics: \n"
+          f"F1: {test_f1:.4f}\n"
+          f"Accuracy: {test_accuracy:.4f}\n"
+          f"Balanced Accuracy: {test_bal_acc:.4f}\n"
+          f"AUC: {test_auc:.4f}\n")

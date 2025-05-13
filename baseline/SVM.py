@@ -33,7 +33,7 @@ for kernel in kernels:
     test_auc = roc_auc_score(y_test, svm_model.predict_proba(X_test)[:, 1])
 
     print("Result in",kernel,"kernel.")
-    print(f"\nTrain: F1: {train_f1:.4f}, Acc: {train_accuracy:.4f}, BalAcc: {train_balacc:.4f}, AUC: {train_auc:.4f}")
+    print(f"Train: \nF1: {train_f1:.4f}\nAccuracy: {train_accuracy:.4f}\nBalanced Accuracy: {train_balacc:.4f}\nAUC: {train_auc:.4f}")
     # print(f"\nValid Set Metrics: F1 Score: {val_f1:.4f}, Accuracy: {val_accuracy:.4f}, AUC: {val_auc:.4f}")
-    print(f"\n Test: F1: {test_f1:.4f}, Acc: {test_accuracy:.4f}, BalAcc: {test_balacc:.4f},AUC: {test_auc:.4f}\n")
+    print(f" Test: \nF1: {test_f1:.4f}\nAccuracy: {test_accuracy:.4f}\nBalanced Accuracy: {test_balacc:.4f}\nAUC: {test_auc:.4f}\n")
 
