@@ -1,6 +1,7 @@
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
 
 #For feature selection
 from sklearn.feature_selection import RFE, SelectKBest, f_classif, RFECV
@@ -33,10 +34,11 @@ from sklearn.feature_selection import SelectFromModel
 def read_data(filepath, label_col='Heart Attack Risk (Binary)',FS_method='RFECV',n_features=8):
     df = pd.read_csv(filepath)
     df = df.dropna()
-    if 'Gender' in df.columns:
-        df['Gender'] = df['Gender'].map({'Female': 0, 'Male': 1})
+    for col in df.columns:
+        if df[col].dtype == 'object':
+            df[col] = LabelEncoder().fit_transform(df[col])
 
-    features = df.drop(columns=[label_col, "Heart Attack Risk (Text)"])
+    features = df.drop(columns=[label_col])
     labels = df[label_col]
 
     scaler = StandardScaler()
@@ -70,11 +72,12 @@ def read_data_all(filepath, label_col='Heart Attack Risk (Binary)'):
 # 读取数据并且进行特征选择 先选择特征然后再用子数据进行聚类
 def read_data_all(filepath, label_col='Heart Attack Risk (Binary)', k=10):
     df = pd.read_csv(filepath).dropna()
-    if 'Gender' in df.columns:
-        df['Gender'] = df['Gender'].map({'Female': 0, 'Male': 1})
+    for col in df.columns:
+        if df[col].dtype == 'object':
+            df[col] = LabelEncoder().fit_transform(df[col])
 
     labels = df[label_col]
-    features = df.drop(columns=[label_col, "Heart Attack Risk (Text)"])
+    features = df.drop(columns=[label_col])
 
     scaler = StandardScaler()
     scaled = scaler.fit_transform(features)

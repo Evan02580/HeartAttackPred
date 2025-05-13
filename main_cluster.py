@@ -42,8 +42,8 @@ def find_optimal_k(data, max_k=10):
 
 # 主流程
 if __name__ == "__main__":
-    file_path = "./datasets/heart-attack-risk-prediction-dataset.csv"
-    data, labels = read_data_all(file_path)
+    file_path = "./datasets/heart.csv"
+    data, labels = read_data_all(file_path, label_col="HeartDisease")
 
     find_optimal_k(data, max_k=10) #画图，输出结果是4
 

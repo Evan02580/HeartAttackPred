@@ -18,23 +18,23 @@ from imblearn.over_sampling import SMOTE
 
 
 if __name__ == "__main__":
-    file_path = "./datasets/heart-attack-risk-prediction-dataset.csv"
+    file_path = "./datasets/heart.csv"
 
     # Step 1: 读取所有数据
-    X_all, y_all = read_data_all(file_path)
+    X_all, y_all = read_data_all(file_path, label_col="HeartDisease")
     X_all = np.asarray(X_all)
     y_all = np.asarray(y_all)
 
     # Step 2: 对整个数据集进行 SMOTE 处理（先平衡类别）
-    try:
-        smote = SMOTE(random_state=42)
-        X_all, y_all = smote.fit_resample(X_all, y_all)
-        count_0 = np.sum(y_all == 0)
-        count_1 = np.sum(y_all == 1)
-        ratio_1 = count_1 / (count_0 + count_1 + 1e-6)
-        print(f"After SMOTE：0={count_0}, 1={count_1}")
-    except ValueError as e:
-        print(f"SMOTE fail: {e}")
+    # try:
+    #     smote = SMOTE(random_state=42)
+    #     X_all, y_all = smote.fit_resample(X_all, y_all)
+    #     count_0 = np.sum(y_all == 0)
+    #     count_1 = np.sum(y_all == 1)
+    #     ratio_1 = count_1 / (count_0 + count_1 + 1e-6)
+    #     print(f"After SMOTE：0={count_0}, 1={count_1}")
+    # except ValueError as e:
+    #     print(f"SMOTE fail: {e}")
 
     # Step 3: 聚类处理
     best_k = 4

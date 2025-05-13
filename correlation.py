@@ -3,9 +3,20 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 
-file_path = "./datasets/heart-attack-risk-prediction-dataset.csv"
+file_path = "./datasets/heart.csv"
 df = pd.read_csv(file_path).dropna()
-df['Gender'] = df['Gender'].map({'Female': 0, 'Male': 1})
+
+# # 2. 血压拆分为高低值
+# df[['BP_High', 'BP_Low']] = df['Blood Pressure'].str.split('/', expand=True).astype(int)
+#
+# # 3. 删除不需要的列
+# df.drop(columns=['Patient ID', 'Country', 'Blood Pressure'], inplace=True)
+
+# 4. 类别列标签编码
+from sklearn.preprocessing import LabelEncoder
+for col in df.columns:
+    if df[col].dtype == 'object':
+        df[col] = LabelEncoder().fit_transform(df[col])
 
 # 计算相关性矩阵
 corr_matrix = df.corr(method='pearson')  # 默认是 Pearson，也可以改为 'spearman' 或 'kendall'
