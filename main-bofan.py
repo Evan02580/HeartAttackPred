@@ -63,8 +63,8 @@ if __name__ == "__main__":
             # print(sum(y_train), sum(y_val), sum(y_test))
 
             # 不再对每个 cluster 内部做 SMOTE
-            depth = [10, 20, 20, 26][c]
-            n_estimators = [35, 55, 45, 45][c]
+            depth = [10, 20, 24, 26][c]
+            n_estimators = [35, 55, 55, 45][c]
             print(f"n_estimators: {n_estimators}, depth: {depth}")
             rf = RandomForestClassifier(n_estimators=n_estimators, max_depth=depth, random_state=42)
             rf.fit(X_train, y_train)
@@ -96,10 +96,10 @@ if __name__ == "__main__":
                            "AUC": roc_auc_score(y, y_prob),
                            "Samples": len(X)}
                 print(
-                    f"{name} - F1: {metrics["F1"]:.4f}, "
-                    f"Acc: {metrics["Accuracy"]:.4f}, "
-                    f"BalAcc: {metrics["Balanced Accuracy"]:.4f}, "
-                    f"AUC: {metrics["AUC"]:.4f}")
+                    f"{name} - F1: {metrics['F1']:.4f}, "
+                    f"Acc: {metrics['Accuracy']:.4f}, "
+                    f"BalAcc: {metrics['Balanced Accuracy']:.4f}, "
+                    f"AUC: {metrics['AUC']:.4f}")
                 if name == " Test":
                     total_test_metrics.append(metrics)
         # 加权平均

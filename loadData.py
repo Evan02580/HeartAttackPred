@@ -85,3 +85,28 @@ def read_data_all(filepath, label_col='Heart Attack Risk (Binary)', k=10):
     # selected = selector.fit_transform(scaled, labels)
 
     return scaled, labels
+
+
+def read_data_general(filepath, label_col, k=10):
+    df = pd.read_csv(filepath).dropna()
+    exclude = {label_col, "Heart Attack Risk (Text)"}
+    str_cols = [
+        c for c in df.select_dtypes(include=['object']).columns
+        if c not in exclude
+    ]
+
+    if str_cols:
+        df = pd.get_dummies(df, columns=str_cols, drop_first=True)
+
+    labels = df[label_col]
+    features = df.drop(columns=[label_col, "Heart Attack Risk (Text)"])
+
+    scaler = StandardScaler()
+    scaled = scaler.fit_transform(features)
+
+    # ✅ 添加特征选择 note：需要修改
+    # from sklearn.feature_selection import SelectKBest, f_classif
+    # selector = SelectKBest(score_func=f_classif, k=k) #进行特征选择
+    # selected = selector.fit_transform(scaled, labels)
+
+    return scaled, labels
