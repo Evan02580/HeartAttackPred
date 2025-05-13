@@ -6,7 +6,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import f1_score, accuracy_score, roc_auc_score, balanced_accuracy_score
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
-from loadData import read_data_all
+from loadData import read_data_all,read_data_general
 from cluster import apply_clustering
 from cluster import split_by_cluster
 from xgboost import XGBClassifier
@@ -21,7 +21,7 @@ if __name__ == "__main__":
     file_path = "./datasets/heart-attack-risk-prediction-dataset.csv"
 
     # Step 1: 读取所有数据
-    X_all, y_all = read_data_all(file_path,label_col="Heart Attack Risk (Binary)")
+    X_all, y_all = read_data_general(file_path,label_col="Heart Attack Risk (Binary)")
     X_all = np.asarray(X_all)
     y_all = np.asarray(y_all)
 
