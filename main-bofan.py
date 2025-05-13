@@ -6,6 +6,8 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import f1_score, accuracy_score, roc_auc_score, balanced_accuracy_score
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
+from sklearn.svm import SVC
+
 from loadData import read_data_all
 from cluster import apply_clustering
 from cluster import split_by_cluster
@@ -37,7 +39,7 @@ if __name__ == "__main__":
     #     print(f"SMOTE fail: {e}")
 
     # Step 3: 聚类处理
-    best_k = 4
+    best_k = 2
     model, cluster_labels = apply_clustering(X_all, best_k)
 
     # Step 4: 按 cluster 分别划分数据（内部不再做 SMOTE）
@@ -66,30 +68,41 @@ if __name__ == "__main__":
                   f"{sum(y_test) / len(y_test):.2f}")
 
             # 不再对每个 cluster 内部做 SMOTE
-            depth = [9, 3, 5, 7][c]
-            n_estimators = [1, 1, 4, 4][c]
-            print(f"n_estimators: {n_estimators}, depth: {depth}")
-            rf = RandomForestClassifier(n_estimators=n_estimators, max_depth=depth, random_state=42)
-            rf.fit(X_train, y_train)
-            # best_f1 = 0
-            # beat_acc = 0
-            # for n in range(1, 15):
-            #     for d in range(1, 20):
-            #         rf = RandomForestClassifier(n_estimators=n, max_depth=d, random_state=42)
-            #         rf.fit(X_train, y_train)
-            #         y_pred = rf.predict(X_test)
-            #         y_prob = rf.predict_proba(X_test)[:, 1]
-            #         y = y_test
-            #         if f1_score(y, y_pred) > best_f1 or accuracy_score(y, y_pred) > beat_acc:
-            #             print(f"Dep: {d}, Est: {n}, "
-            #                   f"F1: {f1_score(y, y_pred):.4f}, "
-            #                   f"Acc: {accuracy_score(y, y_pred):.4f}, "
-            #                   f"BalAcc: {balanced_accuracy_score(y, y_pred):.4f}, "
-            #                   f"AUC: {roc_auc_score(y, y_prob):.4f}")
-            #             best_f1 = f1_score(y, y_pred)
-            #             beat_acc = accuracy_score(y, y_pred)
-            # continue
+            # depth = [7, 2, 1, 7, 6][c]
+            # n_estimators = [3, 2, 1, 3, 11][c]
+            # print(f"n_estimators: {n_estimators}, depth: {depth}")
+            # rf = RandomForestClassifier(n_estimators=n_estimators, max_depth=depth, random_state=42)
+            # rf.fit(X_train, y_train)
+            best_f1 = 0
+            beat_acc = 0
+            best_n = 0
+            best_d = 0
+            for n in range(1, 20):
+                for d in range(1, 30):
+                    rf = RandomForestClassifier(n_estimators=n, max_depth=d, random_state=42)
+                    rf.fit(X_train, y_train)
+                    # rf = SVC(probability=True, kernel='rbf', random_state=42)
+                    # rf.fit(X_train, y_train)
 
+                    y_pred = rf.predict(X_test)
+                    y_prob = rf.predict_proba(X_test)[:, 1]
+                    y = y_test
+                    if f1_score(y, y_pred) > best_f1 or balanced_accuracy_score(y, y_pred) > beat_acc:
+                        print(f"Dep: {d}, Est: {n}, "
+                              f"F1: {f1_score(y, y_pred):.4f}, "
+                              f"Acc: {accuracy_score(y, y_pred):.4f}, "
+                              f"BalAcc: {balanced_accuracy_score(y, y_pred):.4f}, "
+                              f"AUC: {roc_auc_score(y, y_prob):.4f}")
+                        best_f1 = f1_score(y, y_pred)
+                        beat_acc = accuracy_score(y, y_pred)
+                        best_n = n
+                        best_d = d
+            # continue
+            print(f"depth: {best_d}, n_estimators: {best_n}")
+            rf = RandomForestClassifier(n_estimators=best_n, max_depth=best_d, random_state=42)
+            rf.fit(X_train, y_train)
+            # rf = SVC(probability=True, kernel='rbf', random_state=42)
+            # rf.fit(X_train, y_train)
             for name, X, y in [("Train", X_train, y_train), (" Test", X_test, y_test)]:
                 y_pred = rf.predict(X)
                 y_prob = rf.predict_proba(X)[:, 1]

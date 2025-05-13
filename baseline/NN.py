@@ -84,13 +84,13 @@ from sklearn.metrics import f1_score, accuracy_score, roc_auc_score
 # ===================== Early Stop Version =====================
 
 # 1. Load data
-file_path = "../datasets/heart-attack-risk-prediction-dataset.csv"
-X_train, y_train, X_val, y_val, X_test, y_test = read_data(file_path)
+file_path = "../datasets/heart.csv"
+X_train, y_train, X_test, y_test = read_data(file_path, label_col="HeartDisease")
 
 # Display label distribution
 print("===> Checking label distribution <===")
 print("Train: Positive =", int(np.sum(y_train)), " Negative =", len(y_train) - int(np.sum(y_train)))
-print("Valid: Positive =", int(np.sum(y_val)),   " Negative =", len(y_val) - int(np.sum(y_val)))
+# print("Valid: Positive =", int(np.sum(y_val)),   " Negative =", len(y_val) - int(np.sum(y_val)))
 print("Test:  Positive =", int(np.sum(y_test)),  " Negative =", len(y_test) - int(np.sum(y_test)))
 print("")
 
@@ -98,7 +98,7 @@ print("")
 scaler = StandardScaler()
 scaler.fit(X_train)
 X_train_scaled = scaler.transform(X_train)
-X_val_scaled = scaler.transform(X_val)
+# X_val_scaled = scaler.transform(X_val)
 X_test_scaled = scaler.transform(X_test)
 
 # 3. Set hidden layer structures
@@ -130,20 +130,20 @@ for hidden_layers in hidden_layers_list:
     mlp_model.fit(X_train_scaled, y_train)
 
     y_train_pred = mlp_model.predict(X_train_scaled)
-    y_val_pred = mlp_model.predict(X_val_scaled)
+    # y_val_pred = mlp_model.predict(X_val_scaled)
     y_test_pred = mlp_model.predict(X_test_scaled)
 
     result = {
         'hidden_layers': hidden_layers,
         'n_iter': mlp_model.n_iter_,
         'train_f1': f1_score(y_train, y_train_pred),
-        'val_f1': f1_score(y_val, y_val_pred),
+        # 'val_f1': f1_score(y_val, y_val_pred),
         'test_f1': f1_score(y_test, y_test_pred),
         'train_acc': accuracy_score(y_train, y_train_pred),
-        'val_acc': accuracy_score(y_val, y_val_pred),
+        # 'val_acc': accuracy_score(y_val, y_val_pred),
         'test_acc': accuracy_score(y_test, y_test_pred),
         'train_auc': roc_auc_score(y_train, mlp_model.predict_proba(X_train_scaled)[:, 1]),
-        'val_auc': roc_auc_score(y_val, mlp_model.predict_proba(X_val_scaled)[:, 1]),
+        # 'val_auc': roc_auc_score(y_val, mlp_model.predict_proba(X_val_scaled)[:, 1]),
         'test_auc': roc_auc_score(y_test, mlp_model.predict_proba(X_test_scaled)[:, 1]),
     }
 
@@ -152,7 +152,7 @@ for hidden_layers in hidden_layers_list:
     # Print metrics
     print(f"n_iter = {result['n_iter']}")
     print(f"Train: F1={result['train_f1']:.4f}, Acc={result['train_acc']:.4f}, AUC={result['train_auc']:.4f}")
-    print(f"Valid: F1={result['val_f1']:.4f}, Acc={result['val_acc']:.4f}, AUC={result['val_auc']:.4f}")
+    # print(f"Valid: F1={result['val_f1']:.4f}, Acc={result['val_acc']:.4f}, AUC={result['val_auc']:.4f}")
     print(f"Test:  F1={result['test_f1']:.4f}, Acc={result['test_acc']:.4f}, AUC={result['test_auc']:.4f}")
     print("")
 
@@ -162,6 +162,6 @@ for res in results_storage:
     hl = res['hidden_layers']
     print(f"hidden_layers={hl}, n_iter={res['n_iter']}")
     print(f"  Train: F1={res['train_f1']:.4f}, Acc={res['train_acc']:.4f}, AUC={res['train_auc']:.4f}")
-    print(f"  Valid: F1={res['val_f1']:.4f}, Acc={res['val_acc']:.4f}, AUC={res['val_auc']:.4f}")
+    # print(f"  Valid: F1={res['val_f1']:.4f}, Acc={res['val_acc']:.4f}, AUC={res['val_auc']:.4f}")
     print(f"  Test:  F1={res['test_f1']:.4f}, Acc={res['test_acc']:.4f}, AUC={res['test_auc']:.4f}")
     print("--------------------------------------------------------")

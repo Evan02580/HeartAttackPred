@@ -41,14 +41,14 @@ import seaborn as sns
 # plt.show()
 
 
-file_path = "./datasets/heart-attack-risk-prediction-dataset.csv"
+file_path = "./datasets/heart.csv"
 df = pd.read_csv(file_path).dropna()
-df['Gender'] = df['Gender'].map({'Female': 0, 'Male': 1})
+# df['Gender'] = df['Gender'].map({'Female': 0, 'Male': 1})
 
 sns.set(style="whitegrid")
 
 # 获取除 label 外的所有特征列
-features = df.columns.difference(['Heart Attack Risk (Binary)'])
+features = df.columns.difference(['HeartDisease'])
 
 # 设置子图布局
 n_cols = 3
@@ -61,7 +61,7 @@ for i, feature in enumerate(features):
     ax = axes[row, col] if n_rows > 1 else axes[col]
 
     sns.boxplot(
-        x='Heart Attack Risk (Binary)',
+        x='HeartDisease',
         y=feature,
         data=df,
         ax=ax,

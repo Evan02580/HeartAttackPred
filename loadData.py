@@ -45,15 +45,15 @@ def read_data(filepath, label_col='Heart Attack Risk (Binary)',FS_method='RFECV'
     scaled_features = scaler.fit_transform(features)
 
     # 7:1:2 split
-    X_train, X_temp, y_train, y_temp = train_test_split(scaled_features, labels, test_size=0.5, random_state=42)
-    X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=0.6, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(scaled_features, labels, test_size=0.2, random_state=42)
+    # X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=0.6, random_state=42)
 
     # Feature_selector=General_Feature_selector(method=FS_method,n_features=n_features)
     # X_train = Feature_selector.fit_transform(X_train, y_train)
     # X_val = Feature_selector.transform(X_val)
     # X_test = Feature_selector.transform(X_test)
 
-    return X_train, y_train, X_val, y_val, X_test, y_test
+    return X_train, y_train, X_test, y_test
 
 
 """

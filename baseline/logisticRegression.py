@@ -4,26 +4,26 @@ from sklearn.metrics import f1_score, accuracy_score, roc_auc_score, balanced_ac
 import numpy as np
 
 # Load data using your custom read_data function
-file_path = "../datasets/heart-attack-risk-prediction-dataset.csv"
-X_train, y_train, X_val, y_val, X_test, y_test = read_data(file_path)
+file_path = "../datasets/heart.csv"
+X_train, y_train, X_test, y_test = read_data(file_path, label_col="HeartDisease")
 
 # Train a Logistic Regression model
 log_reg = LogisticRegression(max_iter=1000, random_state=42)
 log_reg.fit(X_train, y_train)
 
 # Tune the decision threshold on the validation set based on F1 score
-proba_val = log_reg.predict_proba(X_val)[:, 1]
-thresholds = np.linspace(0, 1, 101)
-best_threshold = 0.5
-best_f1 = 0
-for thr in thresholds:
-    y_val_pred = (proba_val >= thr).astype(int)
-    current_f1 = f1_score(y_val, y_val_pred)
-    if current_f1 > best_f1:
-        best_f1 = current_f1
-        best_threshold = thr
+# proba_val = log_reg.predict_proba(X_val)[:, 1]
+# thresholds = np.linspace(0, 1, 101)
+# best_threshold = 0.5
+# best_f1 = 0
+# for thr in thresholds:
+#     y_val_pred = (proba_val >= thr).astype(int)
+#     current_f1 = f1_score(y_val, y_val_pred)
+#     if current_f1 > best_f1:
+#         best_f1 = current_f1
+#         best_threshold = thr
 
-print("Best threshold on validation set:", best_threshold)
+# print("Best threshold on validation set:", best_threshold)
 
 
 # Define an evaluation function that outputs metrics in the desired dictionary format
@@ -40,9 +40,9 @@ def evaluate_model(model, X_data, y_data, threshold):
     return metrics
 
 # Evaluate on the validation set
-val_metrics = evaluate_model(log_reg, X_val, y_val, best_threshold)
-print("\nValidation Set Metrics:", val_metrics)
+# val_metrics = evaluate_model(log_reg, X_val, y_val, best_threshold)
+# print("\nValidation Set Metrics:", val_metrics)
 
 # Evaluate on the test set
-test_metrics = evaluate_model(log_reg, X_test, y_test, best_threshold)
+test_metrics = evaluate_model(log_reg, X_test, y_test, 0.7)
 print("\nTest Set Metrics:", test_metrics)
