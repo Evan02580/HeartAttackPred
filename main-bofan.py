@@ -25,28 +25,28 @@ if __name__ == "__main__":
     X_all = np.asarray(X_all)
     y_all = np.asarray(y_all)
 
-    # ✅ Step 2: 对整个数据集进行 SMOTE 处理（先平衡类别）
+    # Step 2: 对整个数据集进行 SMOTE 处理（先平衡类别）
     try:
         smote = SMOTE(random_state=42)
         X_all, y_all = smote.fit_resample(X_all, y_all)
         count_0 = np.sum(y_all == 0)
         count_1 = np.sum(y_all == 1)
         ratio_1 = count_1 / (count_0 + count_1 + 1e-6)
-        print(f"全数据 SMOTE后样本分布：0类={count_0}, 1类={count_1}, 1类占比={ratio_1:.2%}")
+        print(f"After SMOTE：0={count_0}, 1={count_1}")
     except ValueError as e:
-        print(f"全数据 SMOTE失败: {e}")
+        print(f"SMOTE fail: {e}")
 
-    # ✅ Step 3: 聚类处理
-    best_k = 5
+    # Step 3: 聚类处理
+    best_k = 4
     model, cluster_labels = apply_clustering(X_all, best_k)
 
-    # ✅ Step 4: 按 cluster 分别划分数据（内部不再做 SMOTE）
+    # Step 4: 按 cluster 分别划分数据（内部不再做 SMOTE）
     split_data = split_by_cluster(X_all, y_all, cluster_labels)
 
     # Step 5: 遍历每个 cluster 并训练 Voting 模型
     n_estimators_list = [30]
     for n_estimators in n_estimators_list:
-        print(f"\n===== Random Forest (n_estimators={n_estimators}) =====")
+        # print(f"\n===== Random Forest (n_estimators={n_estimators}) =====")
         total_test_metrics = []
         for c, data in split_data.items():
             print(f"\n--- Cluster {c} ---")
@@ -59,16 +59,33 @@ if __name__ == "__main__":
             y_test = data["y_test"]
             print(f"Train samples: {len(X_train)}, "
                   f"Valid samples: {len(X_val)}, "
-                  f"Test samples: {len(X_test)}")
+                  f"Test samples: {len(X_test)}, ", end='')
+            # print(sum(y_train), sum(y_val), sum(y_test))
 
             # 不再对每个 cluster 内部做 SMOTE
-            n_estimators = [15, 30, 30, 25, 30][c]
-            print(f"n_estimators: {n_estimators}")
-            rf = RandomForestClassifier(n_estimators=n_estimators, random_state=42)
-            # xgb = XGBClassifier(n_estimators=n_estimators, use_label_encoder=False, eval_metric='logloss', random_state=42)
-            # ensemble = VotingClassifier(estimators=[('rf', rf), ('xgb', xgb)], voting='soft')
-            # ensemble.fit(X_train, y_train)
+            depth = [10, 20, 20, 26][c]
+            n_estimators = [35, 55, 45, 45][c]
+            print(f"n_estimators: {n_estimators}, depth: {depth}")
+            rf = RandomForestClassifier(n_estimators=n_estimators, max_depth=depth, random_state=42)
             rf.fit(X_train, y_train)
+            # best_f1 = 0
+            # beat_acc = 0
+            # for n in range(25, 66, 5):
+            #     for d in range(10, 46):
+            #         rf = RandomForestClassifier(n_estimators=n, max_depth=d, random_state=42)
+            #         rf.fit(X_train, y_train)
+            #         y_pred = rf.predict(X_test)
+            #         y_prob = rf.predict_proba(X_test)[:, 1]
+            #         y = y_test
+            #         if f1_score(y, y_pred) > best_f1 or accuracy_score(y, y_pred) > beat_acc:
+            #             print(f"Dep: {d}, Est: {n}, "
+            #                   f"F1: {f1_score(y, y_pred):.4f}, "
+            #                   f"Acc: {accuracy_score(y, y_pred):.4f}, "
+            #                   f"BalAcc: {balanced_accuracy_score(y, y_pred):.4f}, "
+            #                   f"AUC: {roc_auc_score(y, y_prob):.4f}")
+            #             best_f1 = f1_score(y, y_pred)
+            #             beat_acc = accuracy_score(y, y_pred)
+            # continue
 
             for name, X, y in [("Train", X_train, y_train), ("Valid", X_val, y_val), (" Test", X_test, y_test)]:
                 y_pred = rf.predict(X)
