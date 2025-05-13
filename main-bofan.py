@@ -45,6 +45,7 @@ if __name__ == "__main__":
 
     # Step 5: 遍历每个 cluster 并训练 Voting 模型
     n_estimators_list = [30]
+    depth = 20
     for n_estimators in n_estimators_list:
         # print(f"\n===== Random Forest (n_estimators={n_estimators}) =====")
         total_test_metrics = []
@@ -60,7 +61,9 @@ if __name__ == "__main__":
             print(f"Train samples: {len(X_train)}, "
                   f"Valid samples: {len(X_val)}, "
                   f"Test samples: {len(X_test)}, ", end='')
-            # print(sum(y_train), sum(y_val), sum(y_test))
+            print(f"{sum(y_train) / len(y_train):.2f}, "
+                  f"{sum(y_val) / len(y_val):.2f}, "
+                  f"{sum(y_test) / len(y_test):.2f}")
 
             # 不再对每个 cluster 内部做 SMOTE
             depth = [10, 20, 24, 26][c]
@@ -96,10 +99,10 @@ if __name__ == "__main__":
                            "AUC": roc_auc_score(y, y_prob),
                            "Samples": len(X)}
                 print(
-                    f"{name} - F1: {metrics['F1']:.4f}, "
-                    f"Acc: {metrics['Accuracy']:.4f}, "
-                    f"BalAcc: {metrics['Balanced Accuracy']:.4f}, "
-                    f"AUC: {metrics['AUC']:.4f}")
+                    f"{name} - F1: {metrics["F1"]:.4f}, "
+                    f"Acc: {metrics["Accuracy"]:.4f}, "
+                    f"BalAcc: {metrics["Balanced Accuracy"]:.4f}, "
+                    f"AUC: {metrics["AUC"]:.4f}")
                 if name == " Test":
                     total_test_metrics.append(metrics)
         # 加权平均
