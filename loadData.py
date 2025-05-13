@@ -72,12 +72,13 @@ def read_data_all(filepath, label_col='Heart Attack Risk (Binary)'):
 # 读取数据并且进行特征选择 先选择特征然后再用子数据进行聚类
 def read_data_all(filepath, label_col='Heart Attack Risk (Binary)', k=10):
     df = pd.read_csv(filepath).dropna()
+
     for col in df.columns:
         if df[col].dtype == 'object':
             df[col] = LabelEncoder().fit_transform(df[col])
 
     labels = df[label_col]
-    features = df.drop(columns=[label_col])
+    features = df.drop(columns=[label_col, "RestingECG"])
 
     scaler = StandardScaler()
     scaled = scaler.fit_transform(features)

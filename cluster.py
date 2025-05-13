@@ -28,7 +28,9 @@ def split_by_cluster(X, y, cluster_labels, test_size=0.2, val_ratio=1/3):
 
         # X_train, X_temp, y_train, y_temp = train_test_split(X_cluster, y_cluster, test_size=test_size, random_state=42)
         # X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=1 - val_ratio, random_state=42)
-        X_train, X_test, y_train, y_test = train_test_split(X_cluster, y_cluster, test_size=test_size, random_state=42)
+        X_train, X_test, y_train, y_test = train_test_split(X_cluster, y_cluster,
+                                                            test_size=test_size, stratify=y_cluster,
+                                                            random_state=42)
 
 
         split_data[c] = {

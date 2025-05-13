@@ -1,3 +1,5 @@
+import pdb
+
 import numpy as np
 import pandas as pd
 from sklearn.cluster import KMeans
@@ -39,18 +41,21 @@ if __name__ == "__main__":
     #     print(f"SMOTE fail: {e}")
 
     # Step 3: 聚类处理
-    best_k = 2
-    model, cluster_labels = apply_clustering(X_all, best_k)
-
-    # Step 4: 按 cluster 分别划分数据（内部不再做 SMOTE）
-    split_data = split_by_cluster(X_all, y_all, cluster_labels)
+    # best_k = 3
+    # model, cluster_labels = apply_clustering(X_all, best_k)
+    #
+    # # Step 4: 按 cluster 分别划分数据（内部不再做 SMOTE）
+    # split_data = split_by_cluster(X_all, y_all, cluster_labels)
 
     # Step 5: 遍历每个 cluster 并训练 Voting 模型
-    n_estimators_list = [30]
-    depth = 20
-    for n_estimators in n_estimators_list:
-        # print(f"\n===== Random Forest (n_estimators={n_estimators}) =====")
-        total_test_metrics = []
+    # n_estimators_list = [30]
+    # depth = 20
+    for best_k in [6]:
+        print(f"\n===== Random Forest (Cluster = {best_k}) =====")
+        model, cluster_labels = apply_clustering(X_all, best_k)
+        split_data = split_by_cluster(X_all, y_all, cluster_labels)
+
+        total_test_metrics = {'y': [], 'y_pred': []}
         for c, data in split_data.items():
             print(f"\n--- Cluster {c} ---")
 
@@ -63,13 +68,13 @@ if __name__ == "__main__":
             print(f"Train samples: {len(X_train)}, "
                   # f"Valid samples: {len(X_val)}, "
                   f"Test samples: {len(X_test)}, ", end='')
-            print(f"{sum(y_train) / len(y_train):.2f}, "
+            print(f"Risk in Train: {sum(y_train) / len(y_train):.2f}, "
                   # f"{sum(y_val) / len(y_val):.2f}, "
-                  f"{sum(y_test) / len(y_test):.2f}")
+                  f"Risk in Test: {sum(y_test) / len(y_test):.2f}")
 
             # 不再对每个 cluster 内部做 SMOTE
-            # depth = [7, 2, 1, 7, 6][c]
-            # n_estimators = [3, 2, 1, 3, 11][c]
+            # best_d = [10, 14][c]
+            # best_n = [8, 9][c]
             # print(f"n_estimators: {n_estimators}, depth: {depth}")
             # rf = RandomForestClassifier(n_estimators=n_estimators, max_depth=depth, random_state=42)
             # rf.fit(X_train, y_train)
@@ -77,8 +82,8 @@ if __name__ == "__main__":
             beat_acc = 0
             best_n = 0
             best_d = 0
-            for n in range(1, 20):
-                for d in range(1, 30):
+            for n in range(2, 15):
+                for d in range(2, 15):
                     rf = RandomForestClassifier(n_estimators=n, max_depth=d, random_state=42)
                     rf.fit(X_train, y_train)
                     # rf = SVC(probability=True, kernel='rbf', random_state=42)
@@ -87,7 +92,7 @@ if __name__ == "__main__":
                     y_pred = rf.predict(X_test)
                     y_prob = rf.predict_proba(X_test)[:, 1]
                     y = y_test
-                    if f1_score(y, y_pred) > best_f1 or balanced_accuracy_score(y, y_pred) > beat_acc:
+                    if f1_score(y, y_pred) > best_f1 or accuracy_score(y, y_pred) > beat_acc:
                         print(f"Dep: {d}, Est: {n}, "
                               f"F1: {f1_score(y, y_pred):.4f}, "
                               f"Acc: {accuracy_score(y, y_pred):.4f}, "
@@ -97,7 +102,7 @@ if __name__ == "__main__":
                         beat_acc = accuracy_score(y, y_pred)
                         best_n = n
                         best_d = d
-            # continue
+
             print(f"depth: {best_d}, n_estimators: {best_n}")
             rf = RandomForestClassifier(n_estimators=best_n, max_depth=best_d, random_state=42)
             rf.fit(X_train, y_train)
@@ -117,26 +122,22 @@ if __name__ == "__main__":
                     f"BalAcc: {metrics["Balanced Accuracy"]:.4f}, "
                     f"AUC: {metrics["AUC"]:.4f}")
                 if name == " Test":
-                    total_test_metrics.append(metrics)
+                    total_test_metrics['y'].extend(y)
+                    total_test_metrics['y_pred'].extend(y_pred)
         # 加权平均
-        total_samples = sum(m["Samples"] for m in total_test_metrics)
+        total_y = total_test_metrics['y']
+        total_y_pred = total_test_metrics['y_pred']
 
         # 初始化加权指标
         weighted_avg = {
-            "F1": 0.0,
-            "Accuracy": 0.0,
-            "Balanced Accuracy": 0.0,
-            "AUC": 0.0
+            "F1": f1_score(total_y, total_y_pred),
+            "Accuracy": accuracy_score(total_y, total_y_pred),
+            "Balanced Accuracy": balanced_accuracy_score(total_y, total_y_pred),
+            "AUC": roc_auc_score(total_y, total_y_pred)
         }
 
-        # 累加加权值
-        for m in total_test_metrics:
-            weight = m["Samples"] / total_samples
-            for k in weighted_avg:
-                weighted_avg[k] += m[k] * weight
-
         # 打印加权平均结果
-        print("\n===== Weighted Average over Clusters (Test Set) =====")
+        print(f"\n===== Random Forest (Cluster = {best_k}) =====")
         for k, v in weighted_avg.items():
             print(f"{k}: {v:.4f}")
 
