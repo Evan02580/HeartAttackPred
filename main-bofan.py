@@ -65,17 +65,28 @@ if __name__ == "__main__":
             rf = RandomForestClassifier(n_estimators=best_n, max_depth=best_d, random_state=42)
             rf.fit(X_train, y_train)
 
-            # ========== SHAP 解释 ========== #
+            import os
+
+            # 创建保存图片的文件夹
+            output_dir = "SHAP"
+            os.makedirs(output_dir, exist_ok=True)
+
+            # ========== SHAP 解释（保存 summary plot 为图片） ==========
             import shap
+            import matplotlib.pyplot as plt
 
             explainer = shap.TreeExplainer(rf)
             shap_values = explainer.shap_values(X_test)
-            print(f"解释 Cluster {c} 的 SHAP 贡献度（条形图）")
-            shap.summary_plot(shap_values, X_test, feature_names=feature_names)
 
-            # 也可用: shap.summary_plot(shap_values, X_test, plot_type="dot")  # 蜂群图
+            print(f"绘制并保存 Cluster {c} 的 SHAP summary plot（加标题）")
+            shap.summary_plot(shap_values, X_test, feature_names=feature_names, show=False)
 
-            # ========== LIME 解释（只解释1个样本） ========== #
+            plt.title(f"Cluster {c} SHAP Summary Plot", fontsize=14)
+            plt.tight_layout()
+            plt.savefig(os.path.join(output_dir, f"shap_cluster{c}.png"))
+            plt.close()
+
+            # ========== LIME 解释（只解释1个样本） ==========
             import lime.lime_tabular
 
             explainer_lime = lime.lime_tabular.LimeTabularExplainer(X_train, mode="classification")
@@ -83,44 +94,24 @@ if __name__ == "__main__":
             print(f"解释 Cluster {c} 中第一个测试样本的 LIME 贡献度")
             exp.show_in_notebook(show_table=True)
 
-            # ========== 单个样本 waterfall plot ========== #
-            # 选择第一个样本
+            # ========== 单个样本 waterfall plot ==========
             sample_idx = 0
             sample = X_test[sample_idx].reshape(1, -1)
-
-            # 输出预测概率
             pred_prob = rf.predict_proba(sample)
             print(f"Cluster {c} 中第一个样本的预测概率（低风险, 高风险）: {pred_prob}")
 
-            # ========== 单个样本 waterfall plot（可完整显示标签） ==========
-            import matplotlib.pyplot as plt
 
-            print(f"绘制并保存 Cluster {c} 中第一个测试样本的 SHAP waterfall plot（完整标签）")
-
-            # ========== 单个样本 waterfall plot（完整显示最上面标签） ==========
-            import matplotlib.pyplot as plt
-
-            print(f"绘制并保存 Cluster {c} 中第一个样本的 SHAP waterfall plot（完整标签）")
-
-            # 创建 waterfall plot（关闭自动显示）
             shap.plots._waterfall.waterfall_legacy(
                 explainer.expected_value[1],
                 shap_values[1][sample_idx],
                 feature_names=feature_names,
                 show=False
             )
-
-            # 手动放大图像并调整边距
-            plt.gcf().set_size_inches(10, 8)  # 放大图像
-            plt.subplots_adjust(top=0.9, bottom=0.1)  # 上下边距
-
+            plt.gcf().set_size_inches(10, 8)
+            plt.subplots_adjust(top=0.9, bottom=0.1)
             plt.title(f"Cluster {c} Sample {sample_idx} SHAP Waterfall Plot", fontsize=14)
-
-            # 保存文件
-            plt.savefig(f"shap_waterfall_cluster{c}_sample{sample_idx}_full_labels.png")
+            plt.savefig(os.path.join(output_dir, f"shap_waterfall_cluster{c}.png"))
             plt.close()
-
-            print(f"已保存为 shap_waterfall_cluster{c}_sample{sample_idx}_full_labels.png")
 
             for name, X, y in [("Train", X_train, y_train), (" Test", X_test, y_test)]:
                 y_pred = rf.predict(X)

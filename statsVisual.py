@@ -14,6 +14,7 @@ def plot_distribution(df, column_name):
 
 
 file_path = "./datasets/heart.csv"
+# file_path = "./datasets/heart-attack-risk-prediction-dataset.csv"
 data = pd.read_csv(file_path).dropna()
 
 column_names = ["HeartDisease", "Sex", "Age"]
