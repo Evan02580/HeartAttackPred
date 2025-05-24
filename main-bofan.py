@@ -92,10 +92,35 @@ if __name__ == "__main__":
             pred_prob = rf.predict_proba(sample)
             print(f"Cluster {c} 中第一个样本的预测概率（低风险, 高风险）: {pred_prob}")
 
-            # 画 waterfall plot
-            print(f"绘制 Cluster {c} 中第一个测试样本的 SHAP waterfall plot")
-            shap.plots._waterfall.waterfall_legacy(explainer.expected_value[1], shap_values[1][sample_idx],
-                                                   feature_names=feature_names)
+            # ========== 单个样本 waterfall plot（可完整显示标签） ==========
+            import matplotlib.pyplot as plt
+
+            print(f"绘制并保存 Cluster {c} 中第一个测试样本的 SHAP waterfall plot（完整标签）")
+
+            # ========== 单个样本 waterfall plot（完整显示最上面标签） ==========
+            import matplotlib.pyplot as plt
+
+            print(f"绘制并保存 Cluster {c} 中第一个样本的 SHAP waterfall plot（完整标签）")
+
+            # 创建 waterfall plot（关闭自动显示）
+            shap.plots._waterfall.waterfall_legacy(
+                explainer.expected_value[1],
+                shap_values[1][sample_idx],
+                feature_names=feature_names,
+                show=False
+            )
+
+            # 手动放大图像并调整边距
+            plt.gcf().set_size_inches(10, 8)  # 放大图像
+            plt.subplots_adjust(top=0.9, bottom=0.1)  # 上下边距
+
+            plt.title(f"Cluster {c} Sample {sample_idx} SHAP Waterfall Plot", fontsize=14)
+
+            # 保存文件
+            plt.savefig(f"shap_waterfall_cluster{c}_sample{sample_idx}_full_labels.png")
+            plt.close()
+
+            print(f"已保存为 shap_waterfall_cluster{c}_sample{sample_idx}_full_labels.png")
 
             for name, X, y in [("Train", X_train, y_train), (" Test", X_test, y_test)]:
                 y_pred = rf.predict(X)
