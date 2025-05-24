@@ -3,10 +3,6 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 
-#For feature selection
-from sklearn.feature_selection import RFE, SelectKBest, f_classif, RFECV
-from sklearn.linear_model import LogisticRegression, LassoCV
-from sklearn.feature_selection import SelectFromModel
 
 # def General_Feature_selector(method='RFE', n_features=10, estimator=None, score_func=None):
 #     if method == 'RFE':
@@ -79,6 +75,7 @@ def read_data_all(filepath, label_col='Heart Attack Risk (Binary)', k=10):
 
     labels = df[label_col]
     features = df.drop(columns=[label_col, "RestingECG"])
+    feature_names = features.columns.tolist()  # 这就是特征名列表
 
     scaler = StandardScaler()
     scaled = scaler.fit_transform(features)
@@ -88,7 +85,7 @@ def read_data_all(filepath, label_col='Heart Attack Risk (Binary)', k=10):
     # selector = SelectKBest(score_func=f_classif, k=k) #进行特征选择
     # selected = selector.fit_transform(scaled, labels)
 
-    return scaled, labels
+    return scaled, labels,feature_names
 
 
 def read_data_general(filepath, label_col, k=10):
