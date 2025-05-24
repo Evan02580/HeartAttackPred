@@ -1,57 +1,54 @@
+# main.py
+"""
+聚类 ➜ 按 cluster 训练随机森林 ➜ 评估 ➜ 解释 (SHAP + 聚类画像)
+"""
+
 import numpy as np
-from sklearn.cluster import KMeans
-from sklearn.metrics import silhouette_score
-from loadData import read_data
-from cluster import find_optimal_k, apply_clustering
-from randomForest import train_rf_by_cluster, evaluate_rf_by_cluster
-import matplotlib.pyplot as plt
 from tqdm import tqdm
+from sklearn.cluster import KMeans
+
+from loadData import read_data
 from cluster import split_by_cluster
+from randomForest import train_rf_by_cluster, evaluate_rf_by_cluster
+from explain_rf_shap_chz import explain_rf_by_cluster
+from cluster_profile import plot_cluster_profiles
 
-# 1. Loading Data
-file_path = "./datasets/heart-attack-risk-prediction-dataset.csv"
-X_train, y_train, X_val, y_val, X_test, y_test = read_data(file_path)
+# 1. 读取数据
+file_path = "./datasets/heart.csv"
+X_train, y_train, X_test, y_test, scaler, feature_names = read_data(
+    file_path, label_col="HeartDisease")
 
-# 2. Optimal K
-find = False
-if find:
-    scores = find_optimal_k(X_train, max_k=8)
-    k_values, silhouette_scores = zip(*scores)
-    plt.plot(k_values, silhouette_scores, marker='o')
-    plt.title("Silhouette Score vs K")
-    plt.xlabel("K")
-    plt.ylabel("Silhouette Score")
-    plt.show(block=False)
-    plt.pause(2)
+# 2. KMeans 聚类 (k=4)
+best_k = 4
+kmeans = KMeans(n_clusters=best_k, random_state=760)
+train_clusters = kmeans.fit_predict(X_train)
+test_clusters  = kmeans.predict(X_test)
 
+# 3. 按 cluster 训练随机森林
+n_estimators = 30
+models, train_scores = train_rf_by_cluster(
+    X_train, y_train, train_clusters, n_estimators=n_estimators)
 
-# 3. Clustering
-best_k = 4 # 4?5
-cluster_model = KMeans(n_clusters=best_k, random_state=760)
-train_clusters = cluster_model.fit_predict(X_train)
+print("\n=== Train Metrics by Cluster ===")
+for c, m in train_scores.items():
+    print(f"Cluster {c}: F1={m['F1']:.4f} | Acc={m['Accuracy']:.4f} | "
+          f"AUC={m['AUC']:.4f} | BalAcc={m['Balanced Accuracy']:.4f}")
 
+# 4. 测试集评估（加权平均）
+test_metrics = evaluate_rf_by_cluster(models, X_test, y_test, test_clusters)
+print("\n=== Test Metrics (weighted) ===")
+for k, v in test_metrics.items():
+    print(f"{k}: {v:.4f}")
 
-#add hyperparameter list for test
-n_estimators_list=[10]
+# ------------------------------------------------------------------
+# 5. 解释性分析
+# ------------------------------------------------------------------
 
-for n_estimators in n_estimators_list:
-    print("\nCurrent n_estimater is",n_estimators)
-    # 4. Training Random Forest by Cluster
-    models, train_scores = train_rf_by_cluster(X_train, y_train, train_clusters, n_estimators)
-    print("\nTraining Results by Cluster:")
-    for c, metrics in tqdm(train_scores.items()):
-        print(f"Cluster {c} - F1: {metrics['F1']:.4f}, Acc: {metrics['Accuracy']:.4f}, AUC: {metrics['AUC']:.4f}")
-    print("Cluster Length:", [len(X_train[train_clusters == c]) for c in range(best_k)])
+# 5-1 SHAP（全局 & 局部）
+X_train_orig = scaler.inverse_transform(X_train)  # 还原到原尺度
+explain_rf_by_cluster(models, X_train_orig, train_clusters, feature_names)
 
-    # 5. Predicting Clusters
-    val_clusters = cluster_model.predict(X_val)
-    test_clusters = cluster_model.predict(X_test)
+# 5-2 聚类画像（雷达图 + 均值 CSV）
+plot_cluster_profiles(X_train_orig, train_clusters, feature_names)
 
-
-    val_metrics = evaluate_rf_by_cluster(models, X_val, y_val, val_clusters)
-    print(f"\nValidation Set Metrics (avg): F1: {val_metrics['F1']:.4f}, Acc: {val_metrics['Accuracy']:.4f}, "
-          f"Balanced Acc:{val_metrics['Balanced Accuracy']:.4f}, AUC: {val_metrics['AUC']:.4f}")
-
-    test_metrics = evaluate_rf_by_cluster(models, X_test, y_test, test_clusters)
-    print(f"\nValidation Set Metrics (avg): F1: {test_metrics['F1']:.4f}, Acc: {test_metrics['Accuracy']:.4f}, "
-          f"Balanced Acc:{test_metrics['Balanced Accuracy']:.4f}, AUC: {test_metrics['AUC']:.4f}")
+print("\n解释性文件已生成：shap_plots/  &  cluster_profiles/")

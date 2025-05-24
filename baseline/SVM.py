@@ -3,7 +3,7 @@ from sklearn.svm import SVC
 from sklearn.metrics import f1_score, accuracy_score, roc_auc_score, balanced_accuracy_score
 
 # 1. Loading Data
-file_path = "../datasets/heart.csv"
+file_path = "../datasets/02-heart.csv"
 X_train, y_train, X_test, y_test = read_data(file_path, label_col="HeartDisease")
 
 kernels = ['linear', 'poly', 'rbf', 'sigmoid']
