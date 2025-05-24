@@ -1,20 +1,10 @@
 import numpy as np
-import pandas as pd
-from sklearn.cluster import KMeans
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import f1_score, accuracy_score, roc_auc_score, balanced_accuracy_score
-from sklearn.preprocessing import StandardScaler
-import matplotlib.pyplot as plt
 from loadData import read_data_all,read_data_general
 from cluster import apply_clustering
 from cluster import split_by_cluster
-from xgboost import XGBClassifier
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.ensemble import VotingClassifier
-from sklearn.ensemble import StackingClassifier
-from sklearn.linear_model import LogisticRegression
-from imblearn.over_sampling import SMOTE
+
 
 
 if __name__ == "__main__":
@@ -53,8 +43,8 @@ if __name__ == "__main__":
 
             X_train = np.asarray(data["X_train"])
             y_train = np.asarray(data["y_train"])
-            X_val = data["X_val"]
-            y_val = data["y_val"]
+            # X_val = data["X_val"]
+            # y_val = data["y_val"]
             X_test = data["X_test"]
             y_test = data["y_test"]
             print(f"Train samples: {len(X_train)}, "
