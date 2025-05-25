@@ -48,7 +48,7 @@ if __name__ == "__main__":
             X_test = data["X_test"]
             y_test = data["y_test"]
             print(f"Train samples: {len(X_train)}, "
-                  f"Valid samples: {len(X_val)}, "
+                  # f"Valid samples: {len(X_val)}, "
                   f"Test samples: {len(X_test)}, ", end='')
             # print(sum(y_train), sum(y_val), sum(y_test))
 
@@ -77,7 +77,7 @@ if __name__ == "__main__":
                         beat_acc = accuracy_score(y, y_pred)
             #continue
 
-            for name, X, y in [("Train", X_train, y_train), ("Valid", X_val, y_val), (" Test", X_test, y_test)]:
+            for name, X, y in [("Train", X_train, y_train), (" Test", X_test, y_test)]:
                 y_pred = rf.predict(X)
                 y_prob = rf.predict_proba(X)[:, 1]
                 metrics = {"F1": f1_score(y, y_pred),

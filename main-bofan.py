@@ -9,10 +9,13 @@ from sklearn.ensemble import RandomForestClassifier
 
 
 if __name__ == "__main__":
-    file_path = "./datasets/heart.csv"
+    file_path = "./datasets/"
+
+    file_name = "heart"
+    label_col = "HeartDisease"
 
     # Step 1: 读取所有数据
-    X_all, y_all,feature_names  = read_data_all(file_path, label_col="HeartDisease")
+    X_all, y_all,feature_names  = read_data_all(f"{file_path}{file_name}.csv", label_col=label_col)
     X_all = np.asarray(X_all)
     y_all = np.asarray(y_all)
 
@@ -68,7 +71,7 @@ if __name__ == "__main__":
             import os
 
             # 创建保存图片的文件夹
-            output_dir = "SHAP"
+            output_dir = f"interpret/{file_name}/SHAP"
             os.makedirs(output_dir, exist_ok=True)
 
             # ========== SHAP 解释（保存 summary plot 为图片） ==========

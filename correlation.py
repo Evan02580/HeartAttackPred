@@ -3,7 +3,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 
-file_path = "./datasets/heart.csv"
+file_path = "./datasets/heart-1.csv"
 df = pd.read_csv(file_path).dropna()
 
 # # 2. 血压拆分为高低值
