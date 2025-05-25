@@ -3,9 +3,15 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 
-file_path = "./datasets/heart.csv"
-df = pd.read_csv(file_path).dropna()
+file_path = "./datasets/cardio_train.csv"
+df = pd.read_csv(file_path, sep=";").dropna()
 
+# 归一化
+# from sklearn.preprocessing import MinMaxScaler
+# scaler = MinMaxScaler()
+# df = pd.DataFrame(scaler.fit_transform(df), columns=df.columns)
+
+# print(df.head())
 # # 2. 血压拆分为高低值
 # df[['BP_High', 'BP_Low']] = df['Blood Pressure'].str.split('/', expand=True).astype(int)
 #
