@@ -66,3 +66,4 @@ for hidden_layers in hidden_layers_list:
         html_path = f"{out_dir}/lime_sample{i}_{'_'.join(map(str, hidden_layers))}.html"
         exp.save_to_file(html_path)
         print(f"[LIME] saved → {html_path}")
+
