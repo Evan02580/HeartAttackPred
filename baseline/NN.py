@@ -1,172 +1,69 @@
-from loadData import read_data
+# NN.py
+"""
+多层感知机 (MLP) 早停版 + LIME 可解释性
+"""
+
 import numpy as np
-from sklearn.preprocessing import StandardScaler
 from sklearn.neural_network import MLPClassifier
-from sklearn.metrics import f1_score, accuracy_score, roc_auc_score, balanced_accuracy_score
+from sklearn.metrics import (f1_score, accuracy_score,
+                             roc_auc_score, balanced_accuracy_score)
 
-# ===================== No early stop, perform good in train while bad in valid/test =====================
-#
-# # 1. Load data
-# file_path = "../datasets/heart-attack-risk-prediction-dataset.csv"
-# X_train, y_train, X_val, y_val, X_test, y_test = read_data(file_path)
-#
-# print("===> Checking label distribution <===")
-# print("Train: Positive samples =", np.sum(y_train), " Negative =", len(y_train) - np.sum(y_train))
-# print("Valid: Positive samples =", np.sum(y_val), " Negative =", len(y_val) - np.sum(y_val))
-# print("Test:  Positive samples =", np.sum(y_test), " Negative =", len(y_test) - np.sum(y_test))
-# print("")
-#
-# # 2. Standardize features
-# scaler = StandardScaler()
-# scaler.fit(X_train)  # 只在训练集上fit
-# X_train_scaled = scaler.transform(X_train)
-# X_val_scaled = scaler.transform(X_val)
-# X_test_scaled = scaler.transform(X_test)
-#
-# # 3. Set hidden layer structures
-# hidden_layers_list = [
-#     (32, 16),
-#     (64, 32),
-# ]
-#
-# for hidden_layers in hidden_layers_list:
-#     # 4. 建立 MLP 模型
-#     # 这里演示关闭 early_stopping, 提高 max_iter, 并可选 class_weight='balanced'
-#     mlp_model = MLPClassifier(
-#         hidden_layer_sizes=hidden_layers,
-#         activation='relu',
-#         solver='adam',
-#         max_iter=1000,             # 加大迭代次数
-#         random_state=760,
-#         # alpha=1e-4,              # 正则化强度(默认是1e-4),可根据表现调整
-#         # learning_rate_init=0.001,# 默认学习率,若仍难收敛可尝试稍微调大
-#         early_stopping=False,      # 暂时关闭 early_stopping
-#         # class_weight='balanced', # 如果数据极度不平衡，可以启用它
-#         verbose=True               # 打印损失和迭代信息，便于观察收敛
-#     )
-#
-#     # 5. Train the model
-#     mlp_model.fit(X_train_scaled, y_train)
-#
-#     print(f"\n[Debug] Hidden Layers: {hidden_layers}, n_iter_ = {mlp_model.n_iter_}")
-#
-#     # 6. Evaluate the model
-#     y_train_pred = mlp_model.predict(X_train_scaled)
-#     y_val_pred = mlp_model.predict(X_val_scaled)
-#     y_test_pred = mlp_model.predict(X_test_scaled)
-#
-#     # 7. Print metrics
-#     train_f1  = f1_score(y_train, y_train_pred)
-#     val_f1    = f1_score(y_val,   y_val_pred)
-#     test_f1   = f1_score(y_test,  y_test_pred)
-#
-#     train_acc = accuracy_score(y_train, y_train_pred)
-#     val_acc   = accuracy_score(y_val,   y_val_pred)
-#     test_acc  = accuracy_score(y_test,  y_test_pred)
-#
-#     train_auc = roc_auc_score(y_train, mlp_model.predict_proba(X_train_scaled)[:, 1])
-#     val_auc   = roc_auc_score(y_val,   mlp_model.predict_proba(X_val_scaled)[:, 1])
-#     test_auc  = roc_auc_score(y_test,  mlp_model.predict_proba(X_test_scaled)[:, 1])
-#
-#     print(f"MLP with hidden layers = {hidden_layers}")
-#     print(f"Train: F1={train_f1:.4f}, Acc={train_acc:.4f}, AUC={train_auc:.4f}")
-#     print(f"Valid: F1={val_f1:.4f},   Acc={val_acc:.4f},   AUC={val_auc:.4f}")
-#     print(f"Test:  F1={test_f1:.4f},  Acc={test_acc:.4f},  AUC={test_auc:.4f}\n")
-#
+from loadData import read_data  # 新版返回 scaler & feature_names
 
-
-
-
-
-
-
-# ===================== Early Stop Version =====================
-
-# 1. Load data
+# 1. 读取并预处理数据
 file_path = "../datasets/heart.csv"
-X_train, y_train, X_test, y_test = read_data(file_path, label_col="HeartDisease")
+X_train, y_train, X_test, y_test, scaler, feature_names = read_data(
+    file_path, label_col="HeartDisease")
 
-# Display label distribution
-print("===> Checking label distribution <===")
-print("Train: Positive =", int(np.sum(y_train)), " Negative =", len(y_train) - int(np.sum(y_train)))
-# print("Valid: Positive =", int(np.sum(y_val)),   " Negative =", len(y_val) - int(np.sum(y_val)))
-print("Test:  Positive =", int(np.sum(y_test)),  " Negative =", len(y_test) - int(np.sum(y_test)))
-print("")
+print("===> Label Distribution")
+print(f"Train: 1={y_train.sum()} / 0={len(y_train) - y_train.sum()}")
+print(f"Test : 1={y_test.sum()} / 0={len(y_test) - y_test.sum()}\n")
 
-# 2. Standardize features
-scaler = StandardScaler()
-scaler.fit(X_train)
-X_train_scaled = scaler.transform(X_train)
-# X_val_scaled = scaler.transform(X_val)
-X_test_scaled = scaler.transform(X_test)
-
-# 3. Set hidden layer structures
-hidden_layers_list = [
-    (16,),
-    (32, 16),
-    (16, 8),
-    (64, 32),
-]
-
-results_storage = []
+# 2. 设定不同隐藏层结构
+hidden_layers_list = [(16,), (32, 16), (16, 8), (64, 32)]
 
 for hidden_layers in hidden_layers_list:
-    print(f"--- Training MLP with hidden_layers={hidden_layers} ---")
+    print(f"--- Training MLP {hidden_layers} ---")
+    mlp = MLPClassifier(hidden_layer_sizes=hidden_layers,
+                        activation='relu',
+                        solver='adam',
+                        alpha=1e-3,
+                        max_iter=1000,
+                        early_stopping=True,
+                        validation_fraction=0.1,
+                        n_iter_no_change=20,
+                        random_state=760,
+                        verbose=False)
+    mlp.fit(X_train, y_train)
 
-    mlp_model = MLPClassifier(
-        hidden_layer_sizes=hidden_layers,
-        activation='relu',
-        solver='adam',
-        alpha=1e-3,
-        max_iter=1000,
-        early_stopping=True,
-        validation_fraction=0.1,
-        n_iter_no_change=20,
-        random_state=760,
-        verbose=False
-    )
+    # 3. 评估
+    for name, X, y in [("Train", X_train, y_train), ("Test", X_test, y_test)]:
+        pred = mlp.predict(X)
+        prob = mlp.predict_proba(X)[:, 1]
+        print(f"{name}: F1={f1_score(y, pred):.4f} | "
+              f"Acc={accuracy_score(y, pred):.4f} | "
+              f"BalAcc={balanced_accuracy_score(y, pred):.4f} | "
+              f"AUC={roc_auc_score(y, prob):.4f}")
+    print("n_iter =", mlp.n_iter_, "\n")
 
-    mlp_model.fit(X_train_scaled, y_train)
+    # 4. LIME 可解释性（仅解释前 5 条测试样本）
+    from lime.lime_tabular import LimeTabularExplainer
+    import os
+    out_dir = "lime_reports"
+    os.makedirs(out_dir, exist_ok=True)
 
-    y_train_pred = mlp_model.predict(X_train_scaled)
-    # y_val_pred = mlp_model.predict(X_val_scaled)
-    y_test_pred = mlp_model.predict(X_test_scaled)
+    explainer = LimeTabularExplainer(
+        X_train,
+        feature_names=feature_names,
+        class_names=["No-HD", "HeartDisease"],
+        discretize_continuous=True)
 
-    result = {
-        'hidden_layers': hidden_layers,
-        'n_iter': mlp_model.n_iter_,
-        'train_f1': f1_score(y_train, y_train_pred),
-        # 'val_f1': f1_score(y_val, y_val_pred),
-        'test_f1': f1_score(y_test, y_test_pred),
-        'train_acc': accuracy_score(y_train, y_train_pred),
-        # 'val_acc': accuracy_score(y_val, y_val_pred),
-        'test_acc': accuracy_score(y_test, y_test_pred),
-        'train_auc': roc_auc_score(y_train, mlp_model.predict_proba(X_train_scaled)[:, 1]),
-        # 'val_auc': roc_auc_score(y_val, mlp_model.predict_proba(X_val_scaled)[:, 1]),
-        'test_auc': roc_auc_score(y_test, mlp_model.predict_proba(X_test_scaled)[:, 1]),
-        'train_balanced_acc': balanced_accuracy_score(y_train, y_train_pred),
-        'test_balanced_acc': balanced_accuracy_score(y_test, y_test_pred)
-    }
+    for i in range(min(5, len(X_test))):
+        exp = explainer.explain_instance(
+            X_test[i],
+            mlp.predict_proba,
+            num_features=10)
+        html_path = f"{out_dir}/lime_sample{i}_{'_'.join(map(str, hidden_layers))}.html"
+        exp.save_to_file(html_path)
+        print(f"[LIME] saved → {html_path}")
 
-    results_storage.append(result)
-
-    # Print metrics
-    print(f"n_iter = {result['n_iter']}")
-    print(f"Train: F1={result['train_f1']:.4f}, Acc={result['train_acc']:.4f}, AUC={result['train_auc']:.4f}, BalAcc={result['train_balanced_acc']:.4f}")
-    # print(f"Valid: F1={result['val_f1']:.4f}, Acc={result['val_acc']:.4f}, AUC={result['val_auc']:.4f}")
-    print(f"Test:  F1={result['test_f1']:.4f}, Acc={result['test_acc']:.4f}, AUC={result['test_auc']:.4f}, BalAcc={result['test_balanced_acc']:.4f}")
-    print("")
-
-# 4. Summary of all configurations
-print("============ All MLP Configurations Summary ============")
-for res in results_storage:
-    hl = res['hidden_layers']
-    print(f"hidden_layers={hl}, n_iter={res['n_iter']}")
-    print(f"  Train: F1={res['train_f1']:.4f}, Acc={res['train_acc']:.4f}, AUC={res['train_auc']:.4f}")
-    # print(f"  Valid: F1={res['val_f1']:.4f}, Acc={res['val_acc']:.4f}, AUC={res['val_auc']:.4f}")
-    print(f"  Test:\n"
-          f"F1: {res['test_f1']:.4f}\n"
-          f"Accuracy: {res['test_acc']:.4f}\n"
-          f"Balanced Accuracy: {res['test_balanced_acc']:.4f}\n"
-          f"AUC: {res['test_auc']:.4f}")
-    print("--------------------------------------------------------")
