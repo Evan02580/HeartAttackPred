@@ -8,18 +8,18 @@ from sklearn.ensemble import RandomForestClassifier
 
 if __name__ == "__main__":
     file_path = "./datasets/"
-    file_num = 0
+    file_num = 3
 
     file_name = ["heart", "heart-1", "UCI-1190-11", "statlog_heart"][file_num]
     label_col = ["HeartDisease", "target", "target", "target"][file_num]
 
     # Step 1: 读取所有数据
-    X_all, y_all, feature_names  = read_data_all(f"{file_path}{file_name}.csv",
-                                                 label_col=label_col)
+    X_all, y_all, feature_names = read_data_all(f"{file_path}{file_name}.csv", label_col=label_col)
     X_all = np.asarray(X_all)
     y_all = np.asarray(y_all)
 
-    for best_k in [6]:
+
+    for best_k in [2, 3]:
         print(f"\n===== Random Forest (Cluster = {best_k}) =====")
         model, cluster_labels = apply_clustering(X_all, best_k)
         split_data = split_by_cluster(X_all, y_all, cluster_labels)
@@ -146,6 +146,8 @@ if __name__ == "__main__":
 
         # 打印加权平均结果
         print(f"\n===== Random Forest (Cluster = {best_k}) =====")
+        print(f"Data Name: {file_name}")
+        print(f"Total Samples: {len(y_all)}")
         for k, v in weighted_avg.items():
             print(f"{k}: {v:.4f}")
 

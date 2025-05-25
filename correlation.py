@@ -3,8 +3,8 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 
-file_path = "./datasets/cardio_train.csv"
-df = pd.read_csv(file_path, sep=";").dropna()
+file_path = "./datasets/statlog_heart.csv"
+df = pd.read_csv(file_path).dropna()
 
 # 归一化
 # from sklearn.preprocessing import MinMaxScaler
