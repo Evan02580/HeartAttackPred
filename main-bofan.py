@@ -1,4 +1,3 @@
-
 import numpy as np
 from sklearn.metrics import f1_score, accuracy_score, roc_auc_score, balanced_accuracy_score
 from loadData import read_data_all
@@ -10,12 +9,13 @@ from sklearn.ensemble import RandomForestClassifier
 
 if __name__ == "__main__":
     file_path = "./datasets/"
+    file_num = 0
 
-    file_name = "heart"
-    label_col = "HeartDisease"
+    file_name = ["heart", "heart-1", "UCI-1190-11", "statlog_heart"][file_num]
+    label_col = ["HeartDisease", "target", "target", "target"][file_num]
 
     # Step 1: 读取所有数据
-    X_all, y_all,feature_names  = read_data_all(f"{file_path}{file_name}.csv", label_col=label_col)
+    X_all, y_all, feature_names  = read_data_all(f"{file_path}{file_name}.csv", label_col=label_col)
     X_all = np.asarray(X_all)
     y_all = np.asarray(y_all)
 
@@ -81,7 +81,7 @@ if __name__ == "__main__":
             explainer = shap.TreeExplainer(rf)
             shap_values = explainer.shap_values(X_test)
 
-            print(f"绘制并保存 Cluster {c} 的 SHAP summary plot（加标题）")
+            print(f"绘制并保存 Cluster {c} 的 SHAP summary plot")
             shap.summary_plot(shap_values, X_test, feature_names=feature_names, show=False)
 
             plt.title(f"Cluster {c} SHAP Summary Plot", fontsize=14)

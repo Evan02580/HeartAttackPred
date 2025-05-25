@@ -74,7 +74,21 @@ def read_data_all(filepath, label_col='Heart Attack Risk (Binary)', k=10):
             df[col] = LabelEncoder().fit_transform(df[col])
 
     labels = df[label_col]
-    features = df.drop(columns=[label_col, "RestingECG"])
+
+    # 做一个cor，删掉对所有特征都影响<0.25的特征
+    del_col = []
+    corr_matrix = df.corr(method='pearson')
+    for col in corr_matrix.columns:
+        if col == label_col:
+            continue
+        # 计算与所有特征的相关性
+        # 去掉自己
+        corr_this_col = corr_matrix[col].drop(col)
+        if all(abs(corr_this_col) < 0.25):
+            del_col.append(col)
+
+    print(f"Deleted columns: {del_col}")
+    features = df.drop(columns=[label_col] + del_col)
     feature_names = features.columns.tolist()  # 这就是特征名列表
 
     scaler = StandardScaler()
@@ -85,7 +99,7 @@ def read_data_all(filepath, label_col='Heart Attack Risk (Binary)', k=10):
     # selector = SelectKBest(score_func=f_classif, k=k) #进行特征选择
     # selected = selector.fit_transform(scaled, labels)
 
-    return scaled, labels,feature_names
+    return scaled, labels, feature_names
 
 
 def read_data_general(filepath, label_col, k=10):
