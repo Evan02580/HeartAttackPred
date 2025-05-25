@@ -6,7 +6,6 @@ from cluster import split_by_cluster
 from sklearn.ensemble import RandomForestClassifier
 
 
-
 if __name__ == "__main__":
     file_path = "./datasets/"
     file_num = 0
@@ -15,7 +14,8 @@ if __name__ == "__main__":
     label_col = ["HeartDisease", "target", "target", "target"][file_num]
 
     # Step 1: 读取所有数据
-    X_all, y_all, feature_names  = read_data_all(f"{file_path}{file_name}.csv", label_col=label_col)
+    X_all, y_all, feature_names  = read_data_all(f"{file_path}{file_name}.csv",
+                                                 label_col=label_col)
     X_all = np.asarray(X_all)
     y_all = np.asarray(y_all)
 
