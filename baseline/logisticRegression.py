@@ -4,8 +4,13 @@ from sklearn.metrics import f1_score, accuracy_score, roc_auc_score, balanced_ac
 import numpy as np
 
 # Load data using your custom read_data function
-file_path = "../datasets/heart.csv"
-X_train, y_train, X_test, y_test = read_data(file_path, label_col="HeartDisease")
+file_num = 3
+
+file_path = "../datasets/"
+file_name = ["heart", "heart-1", "UCI-1190-11", "statlog_heart"][file_num]
+label_col = ["HeartDisease", "target", "target", "target"][file_num]
+
+X_train, y_train, X_test, y_test = read_data(f"{file_path}{file_name}.csv", label_col=label_col)
 
 # Train a Logistic Regression model
 log_reg = LogisticRegression(max_iter=1000, random_state=42)
@@ -34,9 +39,11 @@ def evaluate_model(model, X_data, y_data, threshold):
     metrics = {
         'F1': f1_score(y_data, y_pred),
         'Accuracy': accuracy_score(y_data, y_pred),
-        'AUC': roc_auc_score(y_data, y_prob),
-        'Balanced Accuracy': balanced_accuracy_score(y_data, y_pred)
+        'Balanced Accuracy': balanced_accuracy_score(y_data, y_pred),
+        'AUC': roc_auc_score(y_data, y_prob)
     }
+    # Round metrics to four decimal places
+    metrics = {k: round(v, 4) for k, v in metrics.items()}
     return metrics
 
 # Evaluate on the validation set
@@ -46,3 +53,15 @@ def evaluate_model(model, X_data, y_data, threshold):
 # Evaluate on the test set
 test_metrics = evaluate_model(log_reg, X_test, y_test, 0.7)
 print("\nTest Set Metrics:", test_metrics)
+
+
+# 写入csv(加入到最后一行)
+import pandas as pd
+def write_metrics_to_csv(metrics, filename=file_name, model_name="Logistic Regression"):
+    filename = f"../results/{filename}.csv"
+    df = pd.DataFrame([metrics])
+    # 最前面加一列
+    df.insert(0, 'Dataset', model_name)
+    df.to_csv(filename, mode='a', header=not pd.io.common.file_exists(filename), index=False)
+
+write_metrics_to_csv(test_metrics)

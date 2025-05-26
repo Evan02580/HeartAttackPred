@@ -4,14 +4,23 @@ from loadData import read_data_all
 from cluster import apply_clustering
 from cluster import split_by_cluster
 from sklearn.ensemble import RandomForestClassifier
+import pandas as pd
+
+def write_metrics_to_csv(metrics, filename, model_name="Logistic Regression"):
+    filename = f"./results/{filename}.csv"
+    df = pd.DataFrame([metrics])
+    # 最前面加一列
+    df.insert(0, 'Dataset', model_name)
+    df.to_csv(filename, mode='a', header=not pd.io.common.file_exists(filename), index=False)
 
 
 if __name__ == "__main__":
-    file_path = "./datasets/"
     file_num = 3
 
+    file_path = "./datasets/"
     file_name = ["heart", "heart-1", "UCI-1190-11", "statlog_heart"][file_num]
     label_col = ["HeartDisease", "target", "target", "target"][file_num]
+    K_select = [[4, 6], [3, 5], [3, 4], [2, 3]][file_num]  # 每个数据集选择的K值
 
     # Step 1: 读取所有数据
     X_all, y_all, feature_names = read_data_all(f"{file_path}{file_name}.csv", label_col=label_col)
@@ -19,7 +28,7 @@ if __name__ == "__main__":
     y_all = np.asarray(y_all)
 
 
-    for best_k in [2, 3]:
+    for best_k in K_select:
         print(f"\n===== Random Forest (Cluster = {best_k}) =====")
         model, cluster_labels = apply_clustering(X_all, best_k)
         split_data = split_by_cluster(X_all, y_all, cluster_labels)
@@ -138,10 +147,10 @@ if __name__ == "__main__":
 
         # 初始化加权指标
         weighted_avg = {
-            "F1": f1_score(total_y, total_y_pred),
-            "Accuracy": accuracy_score(total_y, total_y_pred),
-            "Balanced Accuracy": balanced_accuracy_score(total_y, total_y_pred),
-            "AUC": roc_auc_score(total_y, total_y_pred)
+            "F1": round(f1_score(total_y, total_y_pred), 4),
+            "Accuracy": round(accuracy_score(total_y, total_y_pred), 4),
+            "Balanced Accuracy": round(balanced_accuracy_score(total_y, total_y_pred), 4),
+            "AUC": round(roc_auc_score(total_y, total_y_pred), 4)
         }
 
         # 打印加权平均结果
@@ -149,7 +158,9 @@ if __name__ == "__main__":
         print(f"Data Name: {file_name}")
         print(f"Total Samples: {len(y_all)}")
         for k, v in weighted_avg.items():
-            print(f"{k}: {v:.4f}")
+            print(f"{k}: {v}")
+        # 保存结果到 CSV
+        write_metrics_to_csv(weighted_avg, file_name, model_name=f"CluRF (k = {best_k})")
 
 
 

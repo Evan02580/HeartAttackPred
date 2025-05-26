@@ -1,0 +1,14 @@
+Dataset: statlog_heart,F1,Accuracy,Balanced Accuracy,AUC
+LDA,0.6452,0.7963,0.7381,0.9466
+Logistic Regression,0.6452,0.7963,0.7381,0.9466
+Random Forest (n = 10),0.6842,0.7778,0.7489,0.8593
+Random Forest (n = 20),0.7,0.7778,0.7576,0.8874
+SVM (kernel = poly),0.75,0.8148,0.7965,0.9235
+SVM (kernel = rbf),0.85,0.8889,0.8745,0.9257
+SVM (kernel = sigmoid),0.8421,0.8889,0.8658,0.9372
+"Neural Network (8,)",0.5106,0.5741,0.5667,0.6375
+"Neural Network (16, 8)",0.8235,0.8333,0.8375,0.875
+"Neural Network (32, 16)",0.7143,0.7778,0.7625,0.8056
+"Neural Network (32, 32)",0.8085,0.8333,0.8292,0.8819
+CluRF (k = 2),0.8936,0.9074,0.9042,0.9042
+CluRF (k = 3),0.8846,0.8909,0.8933,0.8933
