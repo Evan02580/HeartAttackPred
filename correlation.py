@@ -3,7 +3,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 
-file_path = "datasets/statlog_heart.csv"
+file_path = "datasets/cleveland.csv"
 df = pd.read_csv(file_path).dropna()
 
 # 归一化

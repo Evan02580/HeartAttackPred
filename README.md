@@ -43,13 +43,13 @@ The datasets consist of multiple values across a range of features, including:
 - **Note**: This heart disease dataset is curated by combining 5 popular heart disease datasets already available independently but not combined before. Records of patients from US, UK, Switzerland and Hungary.
 - **Visualization**: ![cor_UCI-1190-11](./images/cor_uci.png)
 
-### 4. Statlog (Heart)
+### 4. Cleveland (Heart) Dataset
 
-- **Name**: `statlog_heart.csv`
+- **Name**: `cleveland.csv`
 - **Source**: [Statlog (Heart)](https://archive.ics.uci.edu/dataset/145/statlog+heart)
 - **Description**: 303 rows, 14 columns.
-- **Result**: [result_file](./results/statlog_heart.csv)
-- **Visualization**: ![cor_statlog_heart](./images/cor_statlog_heart.png)
+- **Result**: [result_file](./results/cleveland.csv)
+- **Visualization**: ![cor_cleveland](./images/cor_cleveland.png)
 
 
 ## Methodologies

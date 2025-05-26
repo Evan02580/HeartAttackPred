@@ -13,7 +13,7 @@ def plot_distribution(df, column_name):
     plt.show()
 
 
-file_path = "./datasets/statlog_heart.csv"
+file_path = "datasets/cleveland.csv"
 # file_path = "./datasets/heart-attack-risk-prediction-dataset.csv"
 data = pd.read_csv(file_path).dropna()
 

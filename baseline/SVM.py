@@ -7,7 +7,7 @@ import pandas as pd
 file_num = 3
 
 file_path = "../datasets/"
-file_name = ["heart", "heart-1", "UCI-1190-11", "statlog_heart"][file_num]
+file_name = ["heart", "heart-1", "UCI-1190-11", "cleveland"][file_num]
 label_col = ["HeartDisease", "target", "target", "risk"][file_num]
 
 def write_metrics_to_csv(metrics, filename=file_name, model_name="Logistic Regression"):

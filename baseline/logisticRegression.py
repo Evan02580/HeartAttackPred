@@ -7,7 +7,7 @@ import numpy as np
 file_num = 3
 
 file_path = "../datasets/"
-file_name = ["heart", "heart-1", "UCI-1190-11", "statlog_heart"][file_num]
+file_name = ["heart", "heart-1", "UCI-1190-11", "cleveland"][file_num]
 label_col = ["HeartDisease", "target", "target", "risk"][file_num]
 
 X_train, y_train, X_test, y_test = read_data(f"{file_path}{file_name}.csv", label_col=label_col)

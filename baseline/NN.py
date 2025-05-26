@@ -23,7 +23,7 @@ def write_metrics_to_csv(metrics, filename, model_name="Logistic Regression"):
 file_num = 0
 
 file_path = "../datasets/"
-file_name = ["heart", "heart-1", "UCI-1190-11", "statlog_heart"][file_num]
+file_name = ["heart", "heart-1", "UCI-1190-11", "cleveland"][file_num]
 label_col = ["HeartDisease", "target", "target", "risk"][file_num]
 
 X_train, y_train, X_test, y_test, scaler, feature_names = read_data(
