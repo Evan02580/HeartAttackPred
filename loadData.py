@@ -75,14 +75,13 @@ def read_data_all(filepath, label_col='Heart Attack Risk (Binary)', k=10):
 
     labels = df[label_col]
 
-    # 做一个cor，删掉对所有特征都影响<0.25的特征
+    # Delete columns with low correlation
     del_col = []
     corr_matrix = df.corr(method='pearson')
     for col in corr_matrix.columns:
         if col == label_col:
             continue
-        # 计算与所有特征的相关性
-        # 去掉自己
+
         corr_this_col = corr_matrix[col].drop(col)
         if all(abs(corr_this_col) < 0.25):
             del_col.append(col)
