@@ -1,4 +1,4 @@
-Dataset: statlog_heart,F1,Accuracy,Balanced Accuracy,AUC
+Dataset: cleveland,F1,Accuracy,Balanced Accuracy,AUC
 LDA,0.6452,0.7963,0.7381,0.9466
 Logistic Regression,0.6452,0.7963,0.7381,0.9466
 Random Forest (n = 10),0.6842,0.7778,0.7489,0.8593
