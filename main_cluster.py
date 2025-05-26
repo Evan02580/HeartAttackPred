@@ -43,9 +43,9 @@ def find_optimal_k(data, max_k=10):
 # 主流程
 if __name__ == "__main__":
     file_path = "./datasets/"
-    file_num = 3
+    file_num = 2
 
-    file_name = ["heart", "heart-1", "UCI-1190-11", "statlog_heart"][file_num]
+    file_name = ["heart", "heart-1", "UCI-1190-11", "cleveland"][file_num]
     label_col = ["HeartDisease", "target", "target", "risk"][file_num]
 
     data, labels, features = read_data_all(f"{file_path}{file_name}.csv", label_col=label_col)
