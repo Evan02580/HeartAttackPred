@@ -47,7 +47,7 @@ The datasets consist of multiple values across a range of features, including:
 
 - **Name**: `statlog_heart.csv`
 - **Source**: [Statlog (Heart)](https://archive.ics.uci.edu/dataset/145/statlog+heart)
-- **Description**: 270 rows, 14 columns.
+- **Description**: 303 rows, 14 columns.
 - **Result**: [result_file](./results/statlog_heart.csv)
 - **Visualization**: ![cor_statlog_heart](./images/cor_statlog_heart.png)
 

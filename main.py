@@ -19,7 +19,7 @@ if __name__ == "__main__":
 
     file_path = "./datasets/"
     file_name = ["heart", "heart-1", "UCI-1190-11", "statlog_heart"][file_num]
-    label_col = ["HeartDisease", "target", "target", "target"][file_num]
+    label_col = ["HeartDisease", "target", "target", "risk"][file_num]
     K_select = [[4, 6], [3, 5], [3, 4], [2, 3]][file_num]  # 每个数据集选择的K值
 
     # Step 1: 读取所有数据
