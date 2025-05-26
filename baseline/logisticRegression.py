@@ -64,4 +64,4 @@ def write_metrics_to_csv(metrics, filename=file_name, model_name="Logistic Regre
     df.insert(0, 'Dataset', model_name)
     df.to_csv(filename, mode='a', header=not pd.io.common.file_exists(filename), index=False)
 
-write_metrics_to_csv(test_metrics)
+# write_metrics_to_csv(test_metrics)

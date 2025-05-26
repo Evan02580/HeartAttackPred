@@ -63,4 +63,4 @@ for n_estimators in n_estimators_list:
     }
 
     # 写入csv(加入到最后一行)
-    write_metrics_to_csv(test_metrics, model_name=f"Random Forest (n = {n_estimators})")
+    # write_metrics_to_csv(test_metrics, model_name=f"Random Forest (n = {n_estimators})")

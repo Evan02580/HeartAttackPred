@@ -56,4 +56,4 @@ for kernel in kernels:
         'Balanced Accuracy': round(test_balacc, 4),
         'AUC': round(test_auc, 4)
     }
-    write_metrics_to_csv(test_metrics, filename=file_name, model_name=f"SVM (kernel = {kernel})")
+    # write_metrics_to_csv(test_metrics, filename=file_name, model_name=f"SVM (kernel = {kernel})")

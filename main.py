@@ -15,7 +15,7 @@ def write_metrics_to_csv(metrics, filename, model_name="Logistic Regression"):
 
 
 if __name__ == "__main__":
-    file_num = 3
+    file_num = 0
 
     file_path = "./datasets/"
     file_name = ["heart", "heart-1", "UCI-1190-11", "statlog_heart"][file_num]
@@ -160,7 +160,7 @@ if __name__ == "__main__":
         for k, v in weighted_avg.items():
             print(f"{k}: {v}")
         # 保存结果到 CSV
-        write_metrics_to_csv(weighted_avg, file_name, model_name=f"CluRF (k = {best_k})")
+        # write_metrics_to_csv(weighted_avg, file_name, model_name=f"CluRF (k = {best_k})")
 
 
 

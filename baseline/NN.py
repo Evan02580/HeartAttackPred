@@ -65,28 +65,27 @@ for hidden_layers in hidden_layers_list:
                 'Balanced Accuracy': round(balanced_accuracy_score(y, pred), 4),
                 'AUC': round(roc_auc_score(y, prob), 4)
             }
-            write_metrics_to_csv(test_metrics, filename=file_name, model_name=f"Neural Network {hidden_layers}")
+            # write_metrics_to_csv(test_metrics, filename=file_name, model_name=f"Neural Network {hidden_layers}")
 
     print("n_iter =", mlp.n_iter_, "\n")
-    # 写入csv(加入到最后一行)
 
     # 4. LIME 可解释性（仅解释前 5 条测试样本）
-    # from lime.lime_tabular import LimeTabularExplainer
-    # import os
-    # out_dir = "lime_reports"
-    # os.makedirs(out_dir, exist_ok=True)
-    #
-    # explainer = LimeTabularExplainer(
-    #     X_train,
-    #     feature_names=feature_names,
-    #     class_names=["No-HD", "HeartDisease"],
-    #     discretize_continuous=True)
-    #
-    # for i in range(min(5, len(X_test))):
-    #     exp = explainer.explain_instance(
-    #         X_test[i],
-    #         mlp.predict_proba,
-    #         num_features=10)
-    #     html_path = f"{out_dir}/lime_sample{i}_{'_'.join(map(str, hidden_layers))}.html"
-    #     exp.save_to_file(html_path)
-    #     print(f"[LIME] saved → {html_path}")
+    from lime.lime_tabular import LimeTabularExplainer
+    import os
+    out_dir = "lime_reports"
+    os.makedirs(out_dir, exist_ok=True)
+
+    explainer = LimeTabularExplainer(
+        X_train,
+        feature_names=feature_names,
+        class_names=["No-HD", "HeartDisease"],
+        discretize_continuous=True)
+
+    for i in range(min(5, len(X_test))):
+        exp = explainer.explain_instance(
+            X_test[i],
+            mlp.predict_proba,
+            num_features=10)
+        html_path = f"{out_dir}/lime_sample{i}_{'_'.join(map(str, hidden_layers))}.html"
+        exp.save_to_file(html_path)
+        print(f"[LIME] saved → {html_path}")
