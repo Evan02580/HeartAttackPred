@@ -8,7 +8,7 @@ Bofan Wang, Yihong Pan, Yifan Zhou, Huazhe Cheng, Zhipeng Lin
 
 ## Dataset Overview
 
-The datasets we use can be available on open resources like Kaggle, IEEE dataset. The details of the dataset can be found in [Dataset README](./dataset/README.md).
+The datasets we use can be available on open resources like Kaggle, IEEE dataset. The details of the dataset can be found in [Dataset README](./datasets/README.md).
 
 The datasets consist of multiple values across a range of features, including:
 
