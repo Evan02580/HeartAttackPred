@@ -6,6 +6,32 @@ The project was developed for the COMPSCI 760 course
 
 Bofan Wang, Yihong Pan, Yifan Zhou, Huazhe Cheng, Zhipeng Lin
 
+## Required Libraries
+
+To run the code, you need to have Python installed along with the required libraries. 
+
+1. Clone this repository to your local machine.
+2. Install the necessary libraries using pip.
+
+```bash
+pip install pandas>=1.3.0 numpy>=1.21.0 scikit-learn>=0.24.0 tqdm>=4.60.0 matplotlib>=3.4.0 seaborn>=0.11.0 shap~=0.47.2 lime~=0.2.0.1 ipython~=9.2.0
+```
+
+or simply: `pip install -r requirements.txt`
+
+
+## Running the Code
+
+To run the code, you can execute the following command in your terminal:
+
+1. Run `python correlation.py` to generate the correlation matrix and visualize it.
+2. Run `python main_cluster.py` to check for the best number of clusters.
+3. Run the baseline models 
+   - Run python files in `baseline` directory to evaluate their performance.
+   - Run `python main.py` to train the models and evaluate their performance.
+
+Note that the results will be saved in the `results` directory, and SHAP visualizations will be saved in the `interpret` directory.
+
 ## Dataset Overview
 
 The datasets we use can be available on open resources like Kaggle, IEEE dataset.

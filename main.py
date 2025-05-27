@@ -26,11 +26,11 @@ if __name__ == "__main__":
         best_k = [6, 5, 7, 4][file_num]  # 每个数据集选择的K值
 
         # Step 1: 读取所有数据
+        print(f"Dataset: {file_name}")
         X_all, y_all, feature_names = read_data_all(f"{file_path}{file_name}.csv", label_col=label_col)
         print(f"Feature names: {feature_names}")
         X_all = np.asarray(X_all)
         y_all = np.asarray(y_all)
-
 
         print(f"\n===== Random Forest (Cluster = {best_k}) =====")
         model, cluster_labels = apply_clustering(X_all, best_k)
