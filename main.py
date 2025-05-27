@@ -5,7 +5,7 @@ from cluster import apply_clustering
 from cluster import split_by_cluster
 from sklearn.ensemble import RandomForestClassifier
 import pandas as pd
-# from IPython.core.display import display, HTML
+
 
 def write_metrics_to_csv(metrics, filename, model_name="Logistic Regression"):
     filename = f"./results/{filename}.csv"
@@ -25,6 +25,7 @@ if __name__ == "__main__":
 
         # Step 1: 读取所有数据
         X_all, y_all, feature_names = read_data_all(f"{file_path}{file_name}.csv", label_col=label_col)
+        print(f"Feature names: {feature_names}")
         X_all = np.asarray(X_all)
         y_all = np.asarray(y_all)
 
@@ -103,8 +104,8 @@ if __name__ == "__main__":
 
             explainer_lime = lime.lime_tabular.LimeTabularExplainer(X_train, mode="classification")
             exp = explainer_lime.explain_instance(X_test[0], rf.predict_proba, num_features=10)
-            print(f"解释 Cluster {c} 中第一个测试样本的 LIME 贡献度")
-            exp.show_in_notebook(show_table=True)
+            # print(f"解释 Cluster {c} 中第一个测试样本的 LIME 贡献度")
+            # exp.show_in_notebook(show_table=True)
 
             # ========== 单个样本 waterfall plot ==========
             sample_idx = 0
