@@ -3,18 +3,15 @@
 聚类 ➜ 按 cluster 训练随机森林 ➜ 评估 ➜ 解释 (SHAP + 聚类画像)
 """
 
-import numpy as np
-from tqdm import tqdm
 from sklearn.cluster import KMeans
 
 from loadData_chz import read_data
-from cluster import split_by_cluster
 from randomForest import train_rf_by_cluster, evaluate_rf_by_cluster
 from explain_rf_shap_chz import explain_rf_by_cluster
-from cluster_profile import plot_cluster_profiles
+from Huazhe_SHAP.cluster_profile import plot_cluster_profiles
 
 # 1. 读取数据
-file_path = "./datasets/heart.csv"
+file_path = "../datasets/heart.csv"
 X_train, y_train, X_test, y_test, scaler, feature_names = read_data(
     file_path, label_col="HeartDisease")
 

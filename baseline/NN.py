@@ -3,12 +3,11 @@
 多层感知机 (MLP) 早停版 + LIME 可解释性
 """
 
-import numpy as np
 from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import (f1_score, accuracy_score,
                              roc_auc_score, balanced_accuracy_score)
 import pandas as pd
-from loadData_chz import read_data  # 新版返回 scaler & feature_names
+from Huazhe_SHAP.loadData_chz import read_data  # 新版返回 scaler & feature_names
 
 
 def write_metrics_to_csv(metrics, filename, model_name="Logistic Regression"):
