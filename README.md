@@ -72,7 +72,7 @@ The datasets consist of multiple values across a range of features, including:
 ### 4. Cleveland (Heart) Dataset
 
 - **Name**: `cleveland.csv`
-- **Source**: [Cleveland (Heart)](https://archive.ics.uci.edu/dataset/145/statlog+heart)
+- **Source**: [Cleveland (Heart)](https://archive.ics.uci.edu/dataset/45/heart+disease)
 - **Description**: 303 rows, 14 columns.
 - **Result**: [result_file](./results/cleveland.csv)
 - **Visualization**: ![cor_cleveland](./images/cor_cleveland.png)
