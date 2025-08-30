@@ -8,6 +8,9 @@ from cluster import split_by_cluster
 from sklearn.ensemble import RandomForestClassifier
 import pandas as pd
 
+from sklearn.model_selection import train_test_split
+from cluster import fit_kmeans_train_only  # 新增的函数
+
 
 def write_metrics_to_csv(metrics, filename, model_name="Logistic Regression"):
     filename = f"./results/{filename}.csv"
@@ -164,5 +167,3 @@ if __name__ == "__main__":
             print(f"{k}: {v}")
         # 保存结果到 CSV
         # write_metrics_to_csv(weighted_avg, file_name, model_name=f"CluRF (k = {best_k})")
-
-

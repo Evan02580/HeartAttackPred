@@ -26,12 +26,9 @@ def split_by_cluster(X, y, cluster_labels, test_size=0.2, val_ratio=1/3):
         X_cluster = X[idx]
         y_cluster = y[idx]
 
-        # X_train, X_temp, y_train, y_temp = train_test_split(X_cluster, y_cluster, test_size=test_size, random_state=42)
-        # X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=1 - val_ratio, random_state=42)
         X_train, X_test, y_train, y_test = train_test_split(X_cluster, y_cluster,
                                                             test_size=test_size, stratify=y_cluster,
                                                             random_state=42)
-
 
         split_data[c] = {
             "X_train": X_train, "y_train": y_train,
@@ -47,3 +44,9 @@ def print_cluster_distribution(cluster_labels):
     print("\n📊 每个 Cluster 的样本数量:")
     for cluster_id, count in zip(unique_clusters, counts):
         print(f"Cluster {cluster_id}: {count} samples")
+
+# ===== 新增：仅在训练集上拟合；测试集用最近质心分配 =====
+def fit_kmeans_train_only(X_train, n_clusters, random_state=760):
+    km = KMeans(n_clusters=n_clusters, random_state=random_state)
+    train_labels = km.fit_predict(X_train)   # 只用训练集拟合+打标签
+    return km, train_labels  # km 里有 cluster_centers_

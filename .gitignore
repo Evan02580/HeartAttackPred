@@ -1,0 +1,9 @@
+.idea
+.venv
+__pycache__
+
+result/
+results/*
+
+results_0830/
+results_0830/*
