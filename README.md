@@ -1,7 +1,5 @@
 # Heart Attack Prediction
 
-The project was developed for the COMPSCI 760 course
-
 ## Group Members
 
 Bofan Wang, Yihong Pan, Yifan Zhou, Huazhe Cheng, Zhipeng Lin
